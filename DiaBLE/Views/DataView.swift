@@ -79,7 +79,7 @@ struct DataView: View {
                                     Text("Trend").bold()
                                     ScrollView {
                                         ForEach(history.factoryTrend) { glucose in
-                                            (Text("\(glucose.id) \(glucose.date.shortDateTime)") + Text("  \(glucose.value, specifier: "%3d")").bold())
+                                            (Text("\(glucose.id) \(glucose.date.shortDateTime)") + Text(glucose.value > -1 ? "  \(glucose.value, specifier: "%3d")" : "   … ").bold())
                                         }
                                     }.frame(maxWidth: .infinity, alignment: .topLeading)
                                 }.foregroundColor(.orange)
@@ -105,7 +105,7 @@ struct DataView: View {
                                     Text("Raw trend").bold()
                                     ScrollView {
                                         ForEach(history.rawTrend) { glucose in
-                                            (Text("\(glucose.id) \(glucose.date.shortDateTime)") + Text("  \(glucose.value, specifier: "%3d")").bold())
+                                            (Text("\(glucose.id) \(glucose.date.shortDateTime)") + Text(glucose.value > -1 ? "  \(glucose.value, specifier: "%3d")" : "   … ").bold())
                                         }
                                     }.frame(maxWidth: .infinity, alignment: .topLeading)
                                 }.foregroundColor(.yellow)
@@ -116,7 +116,7 @@ struct DataView: View {
                                     Text("Calibrated trend").bold()
                                     ScrollView {
                                         ForEach(history.calibratedTrend) { glucose in
-                                            (Text("\(glucose.id) \(glucose.date.shortDateTime)") + Text("  \(glucose.value, specifier: "%3d")").bold())
+                                            (Text("\(glucose.id) \(glucose.date.shortDateTime)") + Text(glucose.value > -1 ? "  \(glucose.value, specifier: "%3d")" : "   … ").bold())
                                         }
                                     }.frame(maxWidth: .infinity, alignment: .topLeading)
                                 }.foregroundColor(.purple)
