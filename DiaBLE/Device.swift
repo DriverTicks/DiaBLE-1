@@ -265,7 +265,8 @@ class Libre: Transmitter {
                             j -= 1
                         }
                     }
-                    main.history.rawTrend = [Glucose](rawTrend.prefix(16))
+                    rawTrend = [Glucose](rawTrend.prefix(16))
+                    main.history.rawTrend = rawTrend
                     main.history.factoryTrend = rawTrend.map { factoryGlucose(raw: $0, calibrationInfo: main.settings.activeSensorCalibrationInfo) }
                     main.log("BLE merged trend: \(main.history.factoryTrend.map{$0.value})")
 
