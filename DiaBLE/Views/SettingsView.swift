@@ -59,20 +59,11 @@ struct SettingsView: View {
                 Spacer()
 
                 Button(action: {
-                    let device = self.app.device
                     self.app.selectedTab = (self.settings.preferredTransmitter != .none) ? .monitor : .log
-                    let centralManager = self.app.main.centralManager
-                    if device != nil {
-                        centralManager.cancelPeripheralConnection(device!.peripheral!)
-                    }
-                    if centralManager.state == .poweredOn {
-                        centralManager.scanForPeripherals(withServices: nil, options: nil)
-                        self.app.main.status("Scanning...")
-                    }
-                    if let healthKit = self.app.main.healthKit { healthKit.read() }
-                    if let nightscout = self.app.main.nightscout { nightscout.read() }
+                    self.app.main.rescan()
+                }) {
+                    Text("Rescan").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                 }
-                ) { Text("Rescan").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
 
                 Spacer()
 

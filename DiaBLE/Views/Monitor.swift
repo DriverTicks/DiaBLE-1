@@ -260,21 +260,9 @@ struct Monitor: View {
 
                 HStack {
 
-                    // Same as Rescan
-                    Button(action: {
-                        let device = self.app.device
-                        let centralManager = self.app.main.centralManager
-                        if device != nil {
-                            centralManager.cancelPeripheralConnection(device!.peripheral!)
-                        }
-                        if centralManager.state == .poweredOn {
-                            centralManager.scanForPeripherals(withServices: nil, options: nil)
-                            self.app.main.status("Scanning...")
-                        }
-                        if let healthKit = self.app.main.healthKit { healthKit.read() }
-                        if let nightscout = self.app.main.nightscout { nightscout.read() }
+                    Button(action: { self.app.main.rescan() }) {
+                        Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).padding(.bottom, 8).foregroundColor(.accentColor)
                     }
-                    ) { Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).padding(.bottom, 8).foregroundColor(.accentColor) }
 
                     if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
                         Button(action: {

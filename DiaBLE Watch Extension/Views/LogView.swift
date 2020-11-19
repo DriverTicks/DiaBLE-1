@@ -23,32 +23,21 @@ struct LogView: View {
             HStack(alignment: .center, spacing: 0) {
 
                 VStack(spacing: 0) {
-                    // Same as Rescan
-                    Button(action: {
-                        let device = self.app.device
-                        let centralManager = self.app.main.centralManager
-                        if device != nil {
-                            centralManager.cancelPeripheralConnection(device!.peripheral!)
-                        }
-                        if centralManager.state == .poweredOn {
-                            centralManager.scanForPeripherals(withServices: nil, options: nil)
-                            self.app.main.status("Scanning...")
-                        }
-                        if let healthKit = self.app.main.healthKit { healthKit.read() }
-                        if let nightscout = self.app.main.nightscout { nightscout.read() }
-                    }
-                    ) { VStack { Image("Bluetooth").renderingMode(.template).resizable().frame(width: 24, height: 24)
+
+                    Button(action: { self.app.main.rescan() }) {
+                        VStack {
+                            Image("Bluetooth").renderingMode(.template).resizable().frame(width: 24, height: 24)
                         }
                     }
                 }.foregroundColor(.blue)
 
                 if app.deviceState == "Connected" {
                     Text(readingCountdown > 0 || app.status.hasSuffix("sensor") ?
-                        "\(readingCountdown) s" : "")
+                            "\(readingCountdown) s" : "")
                         .fixedSize()
                         .onReceive(timer) { _ in
                             self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
-                    }.font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
+                        }.font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
                 }
 
                 // Same as in Monitor
@@ -100,7 +89,7 @@ struct LogView: View {
                     self.app.main.log("\(self.settings.logging ? "Log started" : "Log stopped") \(Date().local)")
                 }) { VStack {
                     Image(systemName: settings.logging ? "stop.circle" : "play.circle").resizable().frame(width: 24, height: 24)
-                    }
+                }
                 }.foregroundColor(settings.logging ? .red : .green)
 
             }.font(.footnote)

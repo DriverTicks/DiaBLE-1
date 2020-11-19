@@ -40,22 +40,10 @@ struct LogView: View {
                                 message: Text("This device doesn't allow scanning the Libre."))
                         }
 
-                        // Same as Rescan
-                        Button(action: {
-                            let device = self.app.device
-                            let centralManager = self.app.main.centralManager
-                            if device != nil {
-                                centralManager.cancelPeripheralConnection(device!.peripheral!)
-                            }
-                            if centralManager.state == .poweredOn {
-                                centralManager.scanForPeripherals(withServices: nil, options: nil)
-                                self.app.main.status("Scanning...")
-                            }
-                            if let healthKit = self.app.main.healthKit { healthKit.read() }
-                            if let nightscout = self.app.main.nightscout { nightscout.read() }
-                        }
-                        ) { VStack { Image("Bluetooth").renderingMode(.template).resizable().frame(width: 32, height: 32)
-                            Text("Scan")
+                        Button(action: { self.app.main.rescan() }) {
+                            VStack {
+                                Image("Bluetooth").renderingMode(.template).resizable().frame(width: 32, height: 32)
+                                Text("Scan")
                             }
                         }
                     }.foregroundColor(.accentColor)
@@ -63,11 +51,11 @@ struct LogView: View {
                     if app.deviceState == "Connected" {
 
                         Text(readingCountdown > 0 || app.status.hasSuffix("sensor") ?
-                            "\(readingCountdown) s" : "")
+                                "\(readingCountdown) s" : "")
                             .fixedSize()
                             .onReceive(timer) { _ in
                                 self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
-                        }.font(Font.caption.monospacedDigit()).foregroundColor(.orange)
+                            }.font(Font.caption.monospacedDigit()).foregroundColor(.orange)
                     }
 
                     // Same as in Monitor
@@ -87,10 +75,10 @@ struct LogView: View {
                     }) { VStack {
                         Image(systemName: "wrench.fill").resizable().frame(width: 24, height: 24)
                         Text(settings.debugLevel == 1 ? "Devel" : "Basic").font(.caption).offset(y: -6)
-                        }
+                    }
                     }.background(settings.debugLevel == 1 ? Color.accentColor : Color.clear)
-                        .foregroundColor(settings.debugLevel == 1 ? .black : .accentColor)
-                        .padding(.bottom, 6)
+                    .foregroundColor(settings.debugLevel == 1 ? .black : .accentColor)
+                    .padding(.bottom, 6)
 
                     Button(action: { UIPasteboard.general.string = self.log.text }) {
                         VStack {
@@ -113,11 +101,11 @@ struct LogView: View {
                     }) { VStack {
                         Image(systemName: "backward.fill").resizable().frame(width: 12, height: 12).offset(y: 5)
                         Text(" REV ").offset(y: -2)
-                        }
+                    }
                     }.background(settings.reversedLog ? Color.accentColor : Color.clear)
-                        .border(Color.accentColor, width: 3)
-                        .cornerRadius(5)
-                        .foregroundColor(settings.reversedLog ? .black : .accentColor)
+                    .border(Color.accentColor, width: 3)
+                    .cornerRadius(5)
+                    .foregroundColor(settings.reversedLog ? .black : .accentColor)
 
 
                     Button(action: {
@@ -125,7 +113,7 @@ struct LogView: View {
                         self.app.main.log("\(self.settings.logging ? "Log started" : "Log stopped") \(Date().local)")
                     }) { VStack {
                         Image(systemName: settings.logging ? "stop.circle" : "play.circle").resizable().frame(width: 32, height: 32)
-                        }
+                    }
                     }.foregroundColor(settings.logging ? .red : .green)
 
                     Spacer()

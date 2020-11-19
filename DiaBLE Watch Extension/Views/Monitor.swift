@@ -118,20 +118,9 @@ struct Monitor: View {
 
                 Spacer()
 
-                Button(action: {
-                    let device = self.app.device
-                    let centralManager = self.app.main.centralManager
-                    if device != nil {
-                        centralManager.cancelPeripheralConnection(device!.peripheral!)
-                    }
-                    if centralManager.state == .poweredOn {
-                        centralManager.scanForPeripherals(withServices: nil, options: nil)
-                        self.app.main.status("Scanning...")
-                    }
-                    if let healthKit = self.app.main.healthKit { healthKit.read() }
-                    if let nightscout = self.app.main.nightscout { nightscout.read() }
+                Button(action: { self.app.main.rescan() }) {
+                    Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 16, height: 16).foregroundColor(.blue)
                 }
-                ) { Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 16, height: 16).foregroundColor(.blue) }
                 .frame(height: 16)
 
                 if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {

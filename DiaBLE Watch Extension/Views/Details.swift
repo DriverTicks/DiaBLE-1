@@ -202,20 +202,7 @@ struct Details: View {
 
                 Spacer()
 
-                // Same as Rescan
-                Button(action: {
-                    let centralManager = self.app.main.centralManager
-                    if self.app.device != nil {
-                        centralManager.cancelPeripheralConnection(self.app.device.peripheral!)
-                    }
-                    if centralManager.state == .poweredOn {
-                        centralManager.scanForPeripherals(withServices: nil, options: nil)
-                        self.app.main.status("Scanning...")
-                    }
-                    if let healthKit = self.app.main.healthKit { healthKit.read() }
-                    if let nightscout = self.app.main.nightscout { nightscout.read() }
-                }
-                ) {
+                Button(action: { self.app.main.rescan() }) {
                     HStack {
                         Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 24, height: 24)
                             .foregroundColor(.blue)

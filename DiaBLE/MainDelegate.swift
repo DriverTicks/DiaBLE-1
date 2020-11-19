@@ -140,6 +140,20 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
     }
 
 
+    public func rescan() {
+        let device = app.device
+        if device != nil {
+            centralManager.cancelPeripheralConnection(device!.peripheral!)
+        }
+        if centralManager.state == .poweredOn {
+            centralManager.scanForPeripherals(withServices: nil, options: nil)
+            status("Scanning...")
+        }
+        if let healthKit = self.app.main.healthKit { healthKit.read() }
+        if let nightscout = self.app.main.nightscout { nightscout.read() }
+    }
+
+
     public func playAlarm() {
         let currentGlucose = abs(app.currentGlucose)
         if !settings.mutedAudio {
