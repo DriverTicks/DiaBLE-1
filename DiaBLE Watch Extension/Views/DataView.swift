@@ -36,7 +36,7 @@ struct DataView: View {
                             Text("OOP history").bold()
                             ScrollView {
                                 ForEach(history.values) { glucose in
-                                    (Text("\(glucose.id) \(glucose.date.shortDateTime)") + Text("  \(glucose.value, specifier: "%3d")").bold()).frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 4)
+                                    (Text("\(glucose.id) \(glucose.date.shortDateTime)") + Text(glucose.value > -1 ? "  \(glucose.value, specifier: "%3d")" : "   … ").bold()).frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 4)
                                 }
                             }.frame(maxWidth: .infinity, alignment: .topLeading)
                         }.foregroundColor(.blue)
