@@ -274,6 +274,16 @@ class Libre: Transmitter {
                     main.history.factoryTrend = rawTrend.map { factoryGlucose(raw: $0, calibrationInfo: main.settings.activeSensorCalibrationInfo) }
                     main.log("BLE merged trend: \(main.history.factoryTrend.map{$0.value})")
 
+                    // TODO: use general applyCalibration()
+                    if main.app.calibration.offsetOffset != 0.0 {
+                        var calibratedTrend = rawTrend
+                        for i in 0 ..< calibratedTrend.count {
+                            calibratedTrend[i].calibration = main.app.calibration
+                        }
+                        main.history.calibratedTrend = calibratedTrend
+                        // currentGlucose = -self.history.calibratedTrend[0].value
+                    }
+
                     // TODO: compute delta and update trend arrow
 
                     var rawValues = [Glucose](main.history.rawValues)
@@ -284,14 +294,29 @@ class Libre: Transmitter {
                     main.history.factoryValues = rawValues.map { factoryGlucose(raw: $0, calibrationInfo: main.settings.activeSensorCalibrationInfo) }
                     main.log("BLE merged history: \(main.history.factoryValues.map{$0.value})")
 
-                    if main.history.values.count > 0 && (wearTimeMinutes - historyDelay) % 15 == 0 {
-                        let missingCount = (rawValues[0].id - main.history.values[0].id) / 15
-                        var history = [Glucose](main.history.rawValues.prefix(missingCount) + main.history.values.prefix(32 - missingCount))
-                        for i in 0 ..< missingCount { history[i].value = -1 }
-                        main.history.values = history
+                    // TODO: apply the following also after a NFC scan
+
+                    if (wearTimeMinutes - historyDelay) % 15 == 0 {
+
+                        if main.history.values.count > 0 {
+                            let missingCount = (rawValues[0].id - main.history.values[0].id) / 15
+                            var history = [Glucose](main.history.rawValues.prefix(missingCount) + main.history.values.prefix(32 - missingCount))
+                            for i in 0 ..< missingCount { history[i].value = -1 }
+                            main.history.values = history
+                        }
+
+                        // TODO: use general applyCalibration()
+                        if main.app.calibration.offsetOffset != 0.0 {
+                            var calibratedHistory = rawValues
+                            for i in 0 ..< calibratedHistory.count {
+                                calibratedHistory[i].calibration = main.app.calibration
+                            }
+                            main.history.calibratedValues = calibratedHistory
+                        }
+
                     }
 
-                    // TODO: slide calibrated values
+
                     // TODO: backfill all the latest 8 hours
 
                     main.status("\(sensor!.type)  +  BLE")
