@@ -277,9 +277,6 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
                 if settings.activeSensorSerial == app.device.serial {
                     sensor.uid = settings.patchUid
                     sensor.patchInfo = settings.patchInfo
-                } else { // TEST
-                    sensor.uid = Data("2fe7b10000a407e0".bytes)
-                    sensor.patchInfo = Data("9d083001712b".bytes)
                 }
             }
 
@@ -291,10 +288,13 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
                 log("Bluetooth: the active sensor \(app.device.serial) has reconnected: restoring settings: unlock count: \(sensor.unlockCount )")
             }
             app.device.macAddress = settings.activeSensorAddress
-            sensor.unlockCount += 1
-            settings.activeSensorUnlockCount += 1
-            main.log("Bluetooth: writing streaming unlock payload: \(Data(Libre2.streamingUnlockPayload(id: sensor.uid, info: sensor.patchInfo, enableTime: sensor.unlockCode, unlockCount: sensor.unlockCount)).hex) (unlock code: \(sensor.unlockCode), unlock count: \(sensor.unlockCount), sensor id: \(sensor.uid.hex), patch info: \(sensor.patchInfo.hex))")
-            app.device.write([UInt8](Data(Libre2.streamingUnlockPayload(id: sensor.uid, info: sensor.patchInfo, enableTime: sensor.unlockCode, unlockCount: sensor.unlockCount))), .withResponse)
+
+            if sensor.uid.count + sensor.patchInfo.count > 0 {
+                sensor.unlockCount += 1
+                settings.activeSensorUnlockCount += 1
+                main.log("Bluetooth: writing streaming unlock payload: \(Data(Libre2.streamingUnlockPayload(id: sensor.uid, info: sensor.patchInfo, enableTime: sensor.unlockCode, unlockCount: sensor.unlockCount)).hex) (unlock code: \(sensor.unlockCode), unlock count: \(sensor.unlockCount), sensor id: \(sensor.uid.hex), patch info: \(sensor.patchInfo.hex))")
+                app.device.write([UInt8](Data(Libre2.streamingUnlockPayload(id: sensor.uid, info: sensor.patchInfo, enableTime: sensor.unlockCode, unlockCount: sensor.unlockCount))), .withResponse)
+            }
         }
     }
 
