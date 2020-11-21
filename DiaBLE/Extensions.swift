@@ -70,7 +70,8 @@ extension String {
     }
 
     func matches(_ pattern: String) -> Bool {
-        return pattern.split(separator: " ").contains { self.lowercased().contains($0.lowercased()) }
+        self.split(separator: " ").allSatisfy { substring in
+            pattern.split(separator: " ").contains { substring.lowercased().contains($0.lowercased()) } }
     }
 }
 
