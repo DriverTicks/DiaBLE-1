@@ -308,6 +308,9 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                                                 self.sensor.unlockCount = 0
                                                                 self.main.settings.activeSensorUnlockCount = 0
                                                                 self.main.settings.activeSensorCalibrationInfo = self.sensor.calibrationInfo
+                                                                // TODO: cancel connections also before scanning?
+                                                                self.main.rescan()
+
                                                             } else {
                                                                 self.sensor.unlockCode = currentUnlockCode
                                                             }

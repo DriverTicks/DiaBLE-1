@@ -28,7 +28,7 @@ class Settings: ObservableObject {
 
         "activeSensorSerial": "",
         "activeSensorAddress": Data(),
-        "activeSensorUnlockCode": 0,
+        "activeSensorUnlockCode": 42,
         "activeSensorUnlockCount": 0,
         "activeSensorCalibrationInfo": try! JSONEncoder().encode(CalibrationInfo()),
         // TODO: rename to activeSensorUid/patchInfo
