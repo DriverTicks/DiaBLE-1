@@ -9,6 +9,7 @@ enum SensorType: String, CustomStringConvertible {
     case libre1       = "Libre 1"
     case libre2       = "Libre 2"
     case libreUS14day = "Libre US 14d"
+    case libre2US     = "Libre 2 US"
     case libreProH    = "Libre Pro/H"
     case unknown      = "Libre"
 
@@ -30,6 +31,7 @@ func sensorType(patchInfo: PatchInfo) -> SensorType {
     case 0xA2: return .libre1
     case 0x9D: return .libre2
     case 0xE5: return .libreUS14day
+    case 0x76: return .libre2US
     case 0x70: return .libreProH
     default:   return .unknown
     }
