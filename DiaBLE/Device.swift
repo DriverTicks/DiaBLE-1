@@ -213,11 +213,6 @@ class Libre: Transmitter {
 
         case .compositeRawData:
 
-            if sensor == nil {
-                sensor = Sensor(transmitter: self)
-                main.app.sensor = sensor
-            }
-
             // The Libre always sends 46 bytes as three packets of 20 + 18 + 8 bytes
 
             if data.count == 20 {

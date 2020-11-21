@@ -277,6 +277,10 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
                 if settings.activeSensorSerial == app.device.serial {
                     sensor.uid = settings.patchUid
                     sensor.patchInfo = settings.patchInfo
+
+                    // Set sensor type and serial even when uid/patchInfo are unknown
+                    sensor.type = .libre2
+                    sensor.serial = app.device.serial
                 }
             }
 
