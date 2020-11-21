@@ -17,6 +17,8 @@ Still too early to decide the final design (but I really like already the evil l
 <h4 align ="center">Libre 2 decrypted thanks to @ivalkou  -  Atlas stress test: 1-minute uploads</h4>
 <p align ="center"><br><img src="https://pbs.twimg.com/media/EmTCHz2XcAEf5RE?format=png&name=small" align="top" width="25%" /></p>
 <h4 align ="center">Phones and transmitters: who needs them?</h4>
+<p align ="center"><br><img src="https://pbs.twimg.com/media/EnWjMbGXEAEdBxe?format=jpg&name=medium" align="top" width="50%" /></p>
+<h4 align ="center">Filling the gaps from a Mac</h4>
 <br><br>
 
 The project started as a single script for the iPad Swift Playgrounds to test the workings of the several BLE devices I bought, mainly the **Bubble** and the **MiaoMiao**. It was then quickly converted to an app by using a standard Xcode template: it should compile finely without external dependencies just after changing the _Bundle Identifier_ in the _General_ panel and the _Team_ in the _Signing and Capabilities_ tab of Xcode -- Spike users know already very well what that means... ;)
