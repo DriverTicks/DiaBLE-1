@@ -269,7 +269,7 @@ class Sensor: ObservableObject {
 
 func serialNumber(uid: SensorUid) -> String {
     let lookupTable = ["0","1","2","3","4","5","6","7","8","9","A","C","D","E","F","G","H","J","K","L","M","N","P","Q","R","T","U","V","W","X","Y","Z"]
-    guard uid.count == 8 else { return "invalid uid" }
+    guard uid.count == 8 else { return "" }
     let bytes = Array(uid.reversed().suffix(6))
     var fiveBitsArray = [UInt8]()
     fiveBitsArray.append( bytes[0] >> 3 )
