@@ -102,7 +102,7 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             //    app.transmitter = custom.transmitter
             //    app.transmitter.name = "bridge"
 
-        } else if String(name!.prefix(13)).matches("Mi Smart Band") {
+        } else if name!.prefix(13) == "Mi Smart Band" {
             app.device = Device(peripheral: peripheral, main: main)
             app.device.name = name!
             if manufacturerData!.count >= 8 {
