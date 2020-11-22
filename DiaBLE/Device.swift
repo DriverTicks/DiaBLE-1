@@ -291,7 +291,7 @@ class Libre: Transmitter {
 
                     // TODO: apply the following also after a NFC scan
 
-                    if (wearTimeMinutes - historyDelay) % 15 == 0 {
+                    if (wearTimeMinutes - historyDelay) % 15 == 0 || wearTimeMinutes - rawValues[0].id > 16 {
 
                         if main.history.values.count > 0 {
                             let missingCount = (rawValues[0].id - main.history.values[0].id) / 15
