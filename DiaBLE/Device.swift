@@ -207,6 +207,13 @@ class Libre: Transmitter {
     override class var dataReadCharacteristicUUID: String  { UUID.compositeRawData.rawValue }
 
 
+    override func parseManufacturerData(_ data: Data) {
+        if data.count > 7 {
+            let sensorUid: SensorUid = Data(data[2...7]) + [0x07, 0xe0]
+            main.log("Bluetooth: advertised \(name)'s UID: \(sensorUid.hex)")
+        }
+    }
+    
     override func read(_ data: Data, for uuid: String) {
 
         switch UUID(rawValue: uuid) {

@@ -62,7 +62,6 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
         UNUserNotificationCenter.current().delegate = self
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _,_ in }
 
-        // FIXME: on Mac Catalyst: "Cannot activate session when app is in background."
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, options: [.duckOthers])
             try AVAudioSession.sharedInstance().setActive(true)
