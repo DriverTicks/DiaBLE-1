@@ -26,7 +26,9 @@ struct Details: View {
                 }
 
                 if app.device != nil {
+
                     Section(header: Text("Device").font(.headline)) {
+
                         Group {
                             if app.device.peripheral?.name != nil {
                                 HStack {
@@ -122,7 +124,9 @@ struct Details: View {
 
 
                 if app.sensor != nil {
+
                     Section(header: Text("Sensor").font(.headline)) {
+
                         HStack {
                             Text("Status")
                             Spacer()
@@ -177,28 +181,31 @@ struct Details: View {
                     }.font(.callout)
                 }
 
-                Section(header: Text("BLE Setup").font(.headline)) {
+                if app.device != nil && app.device.type == .transmitter(.abbott) {
 
-                    HStack {
-                        Text("Patch Info")
-                        TextField("Patch Info", value: $settings.patchInfo, formatter: HexDataFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
-                    }
-                    HStack {
-                        Text("Calibration Info")
-                        Spacer()
-                        Text("[\(settings.activeSensorCalibrationInfo.i1), \(settings.activeSensorCalibrationInfo.i2), \(settings.activeSensorCalibrationInfo.i3), \(settings.activeSensorCalibrationInfo.i4), \(settings.activeSensorCalibrationInfo.i5), \(settings.activeSensorCalibrationInfo.i6)]")
-                            .foregroundColor(.yellow)
-                    }
-                    HStack {
-                        Text("Unlock Code")
-                        TextField("Unlock Code", value: $settings.activeSensorUnlockCode, formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
-                    }
-                    HStack {
-                        Text("Unlock Count")
-                        TextField("Unlock Count", value: $settings.activeSensorUnlockCount, formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
-                    }
+                    Section(header: Text("BLE Setup").font(.headline)) {
 
-                }.font(.callout)
+                        HStack {
+                            Text("Patch Info")
+                            TextField("Patch Info", value: $settings.patchInfo, formatter: HexDataFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
+                        }
+                        HStack {
+                            Text("Calibration Info")
+                            Spacer()
+                            Text("[\(settings.activeSensorCalibrationInfo.i1), \(settings.activeSensorCalibrationInfo.i2), \(settings.activeSensorCalibrationInfo.i3), \(settings.activeSensorCalibrationInfo.i4), \(settings.activeSensorCalibrationInfo.i5), \(settings.activeSensorCalibrationInfo.i6)]")
+                                .foregroundColor(.yellow)
+                        }
+                        HStack {
+                            Text("Unlock Code")
+                            TextField("Unlock Code", value: $settings.activeSensorUnlockCode, formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
+                        }
+                        HStack {
+                            Text("Unlock Count")
+                            TextField("Unlock Count", value: $settings.activeSensorUnlockCount, formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
+                        }
+
+                    }.font(.callout)
+                }
 
 
                 // Embed a specific device setup panel
