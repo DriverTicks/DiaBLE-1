@@ -181,7 +181,7 @@ struct Details: View {
                     }.font(.callout)
                 }
 
-                if app.device != nil && app.device.type == .transmitter(.abbott) {
+                if app.device != nil && app.device.type == .transmitter(.abbott) || settings.preferredTransmitter == .abbott {
 
                     Section(header: Text("BLE Setup").font(.headline)) {
 
