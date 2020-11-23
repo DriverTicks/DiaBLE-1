@@ -167,15 +167,18 @@ struct Details: View {
                                 Text("\((app.lastReadingDate - Double(app.sensor.age) * 60).shortDateTime)").foregroundColor(.yellow)
                             }
                         }
+                        if !app.sensor.uid.isEmpty {
+                            HStack {
+                                Text("UID")
+                                Spacer()
+                                Text(app.sensor.uid.hex).foregroundColor(.yellow)
+                            }
+                        }
                     }.font(.callout)
                 }
 
                 Section(header: Text("BLE Setup").font(.headline)) {
 
-                    HStack {
-                        Text("Sensor UID")
-                        TextField("Sensor UID", value: $settings.patchUid, formatter: HexDataFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
-                    }
                     HStack {
                         Text("Patch Info")
                         TextField("Patch Info", value: $settings.patchInfo, formatter: HexDataFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)

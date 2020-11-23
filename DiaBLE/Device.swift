@@ -186,6 +186,8 @@ class Libre: Transmitter {
     override class var type: DeviceType { DeviceType.transmitter(.abbott) }
     override class var name: String { "Libre" }
 
+    var uid: SensorUid = Data()
+
     enum UUID: String, CustomStringConvertible, CaseIterable {
         case abbottCustom     = "FDE3"
         case bleLogin         = "F001"
@@ -210,6 +212,7 @@ class Libre: Transmitter {
     override func parseManufacturerData(_ data: Data) {
         if data.count > 7 {
             let sensorUid: SensorUid = Data(data[2...7]) + [0x07, 0xe0]
+            uid = sensorUid
             main.log("Bluetooth: advertised \(name)'s UID: \(sensorUid.hex)")
         }
     }

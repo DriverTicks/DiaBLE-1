@@ -274,13 +274,15 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
                 sensor = Sensor(transmitter: app.transmitter)
                 app.sensor = sensor
                 sensor.state = .active
+                sensor.uid = (app.device as! Libre).uid
+                // TODO
+                settings.patchUid = sensor.uid
 
                 if settings.activeSensorSerial == app.device.serial {
-                    sensor.uid = settings.patchUid
-                    sensor.patchInfo = settings.patchInfo
+                    if !settings.patchInfo.isEmpty {
+                        sensor.patchInfo = settings.patchInfo
 
-                    // Set sensor type and serial even when uid/patchInfo are unknown
-                    if sensor.uid.count + sensor.patchInfo.count == 0 {
+                    } else {
                         sensor.serial = app.device.serial
                         sensor.type = .libre2
                     }
@@ -296,7 +298,7 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             }
             app.device.macAddress = settings.activeSensorAddress
 
-            if sensor.uid.count + sensor.patchInfo.count > 0 {
+            if sensor.uid.count > 0 && sensor.patchInfo.count > 0 {
                 sensor.unlockCount += 1
                 settings.activeSensorUnlockCount += 1
                 main.log("Bluetooth: writing streaming unlock payload: \(Data(Libre2.streamingUnlockPayload(id: sensor.uid, info: sensor.patchInfo, enableTime: sensor.unlockCode, unlockCount: sensor.unlockCount)).hex) (unlock code: \(sensor.unlockCode), unlock count: \(sensor.unlockCount), sensor id: \(sensor.uid.hex), patch info: \(sensor.patchInfo.hex))")
