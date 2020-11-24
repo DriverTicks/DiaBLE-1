@@ -28,8 +28,11 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
         history = History()
         settings = Settings()
 
-        centralManager = CBCentralManager(delegate: nil, queue: nil)
         bluetoothDelegate = BluetoothDelegate()
+        centralManager = CBCentralManager(delegate: bluetoothDelegate,
+                                          queue: nil,
+                                          options: [CBCentralManagerOptionRestoreIdentifierKey: "DiaBLE"])
+
         nfcReader = NFCReader()
         healthKit = HealthKit()
 
@@ -40,7 +43,6 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
 
         app.main = self
         bluetoothDelegate.main = self
-        centralManager.delegate = bluetoothDelegate
         nfcReader.main = self
 
         if let healthKit = healthKit {

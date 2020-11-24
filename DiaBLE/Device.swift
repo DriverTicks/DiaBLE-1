@@ -367,7 +367,7 @@ class Libre: Transmitter {
                 id -= [0, 2, 4, 6, 7, 12, 15][i]
 
             } else {
-                // TODO: precise id of the last three recent historic values
+                // latest three historic values
                 id = ((id - delay) / 15) * 15 - 15 * (i - 7)
             }
 

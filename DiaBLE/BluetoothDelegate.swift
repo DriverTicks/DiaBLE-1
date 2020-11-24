@@ -41,7 +41,8 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
 
     public func centralManager(_ manager: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData advertisement: [String : Any], rssi: NSNumber) {
         var name = peripheral.name
-        let manufacturerData = advertisement["kCBAdvDataManufacturerData"] as? Data
+        let manufacturerData = advertisement[CBAdvertisementDataManufacturerDataKey] as? Data
+        let dataServiceUUIDs = advertisement[CBAdvertisementDataServiceUUIDsKey] as? [CBUUID]
 
         var didFindATransmitter = false
 
@@ -130,6 +131,10 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         if let manufacturerData = manufacturerData {
             app.device.parseManufacturerData(manufacturerData)
         }
+        if let dataServiceUUIDs = dataServiceUUIDs {
+            // TODO: assign to device instance vars
+            log("Bluetooth: \(name!)'s data service UUIDs: \(dataServiceUUIDs)")
+        }
         main.status("\(app.device.name)")
         app.device.peripheral?.delegate = self
         main.log("Bluetooth: connecting to \(name!)...")
@@ -149,6 +154,11 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             peripheral.discoverServices(nil)
         }
         log(msg)
+    }
+
+
+    public func centralManager(_ manager: CBCentralManager, willRestoreState dict: [String : Any]) {
+        main.log("Bluetooth: will restore state to \(dict.debugDescription)")
     }
 
 

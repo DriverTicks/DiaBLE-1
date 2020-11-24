@@ -30,8 +30,11 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
         settings = Settings()
         extendedSession = WKExtendedRuntimeSession()
 
-        centralManager = CBCentralManager(delegate: nil, queue: nil)
         bluetoothDelegate = BluetoothDelegate()
+        centralManager = CBCentralManager(delegate: bluetoothDelegate,
+                                          queue: nil,
+                                          options: [CBCentralManagerOptionRestoreIdentifierKey: "DiaBLE"])
+
         healthKit = HealthKit()
 
         super.init()
