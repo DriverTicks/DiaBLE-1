@@ -43,7 +43,6 @@ extension Sensor {
         case unknown0x1d     = 0x1d
         case unknown0x1f     = 0x1f
 
-
         var description: String {
             switch self {
             case .activate:        return "activate"
@@ -186,7 +185,10 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                     return
 
                 case .success(let systemInfo):
-                    self.connectedTag?.customCommand(requestFlags: [.highDataRate], customCommandCode: 0xA1, customRequestParameters: Data()) { (customResponse: Data, error: Error?) in
+                    self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: 0xA1, customRequestParameters: Data()) {
+
+                        response, error in
+
                         if error != nil {
                             // session.invalidate(errorMessage: "Error while getting patch info: " + error!.localizedDescription)
                             self.main.log("NFC: error while getting patch info: \(error!.localizedDescription)")
@@ -195,8 +197,9 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                         for i in 0 ..< requests {
 
                             self.connectedTag?.readMultipleBlocks(requestFlags: [.highDataRate, .address],
-                                                                  blockRange: NSRange(UInt8(i * requestBlocks) ... UInt8(i * requestBlocks + (i == requests - 1 ? (remainder == 0 ? requestBlocks : remainder) : requestBlocks) - (requestBlocks > 1 ? 1 : 0)))
-                            ) { blockArray, error in
+                                                                  blockRange: NSRange(UInt8(i * requestBlocks) ... UInt8(i * requestBlocks + (i == requests - 1 ? (remainder == 0 ? requestBlocks : remainder) : requestBlocks) - (requestBlocks > 1 ? 1 : 0)))) {
+
+                                blockArray, error in
 
                                 if error != nil {
                                     self.main.log("NFC: error while reading multiple blocks (#\(i * requestBlocks) - #\(i * requestBlocks + (i == requests - 1 ? (remainder == 0 ? requestBlocks : remainder) : requestBlocks) - (requestBlocks > 1 ? 1 : 0))): \(error!.localizedDescription)")
@@ -270,9 +273,9 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                     self.main.log("NFC: sensor uid: \(self.sensor.uid.hex)")
                                     self.main.log("NFC: sensor serial number: \(self.sensor.serial)")
 
-                                    let patchInfo = customResponse
+                                    let patchInfo = response
                                     self.sensor.patchInfo = Data(patchInfo)
-                                    if customResponse.count > 0 {
+                                    if response.count > 0 {
                                         self.main.log("NFC: patch info: \(patchInfo.hex)")
                                         self.main.log("NFC: sensor type: \(self.sensor.type.rawValue)")
 
@@ -298,13 +301,13 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                                         self.sensor.unlockCode = UInt32(self.main.settings.activeSensorUnlockCode)
                                                         let cmd = self.sensor.nfcCommand(subCmd)
                                                         self.main.debugLog("NFC: sending \(self.sensor.type) command to \(subCmd.description): code: 0x\(String(format: "%0X", cmd.code)), parameters: 0x\(cmd.parameters.hex) (unlock code: \(self.sensor.unlockCode))")
-                                                        self.connectedTag?.customCommand(requestFlags: [.highDataRate], customCommandCode: Int(cmd.code), customRequestParameters:  cmd.parameters) { (customResponse: Data, error: Error?) in
-                                                            self.main.debugLog("NFC: '\(subCmd.description)' command response (\(customResponse.count) bytes): 0x\(customResponse.hex), error: \(error?.localizedDescription ?? "none")")
-                                                            if subCmd == .enableStreaming && customResponse.count == 6 {
-                                                                self.main.debugLog("NFC: enabled BLE streaming on \(self.sensor.type) \(self.sensor.serial) (unlock code: \(self.sensor.unlockCode), MAC address: \(Data(customResponse.reversed()).hexAddress))")
+                                                        self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: Int(cmd.code), customRequestParameters:  cmd.parameters) { response, error in
+                                                            self.main.debugLog("NFC: '\(subCmd.description)' command response (\(response.count) bytes): 0x\(response.hex), error: \(error?.localizedDescription ?? "none")")
+                                                            if subCmd == .enableStreaming && response.count == 6 {
+                                                                self.main.debugLog("NFC: enabled BLE streaming on \(self.sensor.type) \(self.sensor.serial) (unlock code: \(self.sensor.unlockCode), MAC address: \(Data(response.reversed()).hexAddress))")
                                                                 self.main.settings.activeSensorSerial = self.sensor.serial
                                                                 self.main.settings.patchInfo = self.sensor.patchInfo
-                                                                self.main.settings.activeSensorAddress = Data(customResponse.reversed())
+                                                                self.main.settings.activeSensorAddress = Data(response.reversed())
                                                                 self.sensor.unlockCount = 0
                                                                 self.main.settings.activeSensorUnlockCount = 0
                                                                 self.main.settings.activeSensorCalibrationInfo = self.sensor.calibrationInfo
@@ -314,8 +317,8 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                                             } else {
                                                                 self.sensor.unlockCode = currentUnlockCode
                                                             }
-                                                            if subCmd == .activate && customResponse.count == 4 {
-                                                                self.main.debugLog("NFC: after trying activating received \(customResponse.hex) for the patch info \(patchInfo.hex)")
+                                                            if subCmd == .activate && response.count == 4 {
+                                                                self.main.debugLog("NFC: after trying activating received \(response.hex) for the patch info \(patchInfo.hex)")
                                                                 // receiving 9d081000 for a patchInfo 9d0830010000 but state remaining .notActivated
                                                                 // TODO
                                                             }
@@ -379,11 +382,20 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
         if bytes % 2 == 1 || ( bytes % 2 == 0 && addressToRead % 2 == 1 ) { remainingWords += 1 }
         let wordsToRead = UInt8(remainingWords > 12 ? 12 : remainingWords)    // real limit is 15
 
-        if buffer.count == 0 { self.main.debugLog("NFC: sending 0xa3 0x07 0x\(Data(sensor.type.backdoor).hex) command (\(sensor.type) read raw)") }
+        var readRawCommand = NFCCommand(code: 0xA3, parameters: Data(self.sensor.type.backdoor + [UInt8(addressToRead & 0x00FF), UInt8(addressToRead >> 8), wordsToRead]))
 
-        self.connectedTag?.customCommand(requestFlags: [.highDataRate], customCommandCode: 0xA3, customRequestParameters: Data(self.sensor.type.backdoor + [UInt8(addressToRead & 0x00FF), UInt8(addressToRead >> 8), wordsToRead])) { (customResponse: Data, error: Error?) in
+        if sensor.type == .libre2 {
+            // TODO encode parameters
+            readRawCommand = NFCCommand(code: 0xB3, parameters: Data([UInt8(addressToRead & 0x00FF), UInt8(addressToRead >> 8), wordsToRead]))
+        }
 
-            var data = customResponse
+        if buffer.count == 0 { self.main.debugLog("NFC: sending 0x\(String(format: "%0x`", readRawCommand.code)) 0x07 0x\(readRawCommand.parameters.hex) command (\(sensor.type) read raw)") }
+
+        self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: Int(readRawCommand.code), customRequestParameters: readRawCommand.parameters) {
+
+            response, error in
+
+            var data = response
 
             if error != nil {
                 self.main.debugLog("NFC: error while reading \(wordsToRead) words at raw memory 0x\(String(format: "%04X", addressToRead))")
@@ -409,8 +421,11 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
 
         // Unlock
         self.main.debugLog("NFC: sending 0xa4 0x07 0x\(Data(sensor.type.backdoor).hex) command (\(sensor.type) unlock)")
-        self.connectedTag?.customCommand(requestFlags: [.highDataRate], customCommandCode: 0xA4, customRequestParameters: Data(self.sensor.type.backdoor)) { (customResponse: Data, error: Error?) in
-            self.main.debugLog("NFC: unlock command response: 0x\(customResponse.hex), error: \(error?.localizedDescription ?? "none")")
+        self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: 0xA4, customRequestParameters: Data(self.sensor.type.backdoor)) {
+
+            response, error in
+
+            self.main.debugLog("NFC: unlock command response: 0x\(response.hex), error: \(error?.localizedDescription ?? "none")")
 
             let addressToRead = (address / 8) * 8
             let startOffset = Int(address % 8)
@@ -437,7 +452,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                         let blockToWrite = bytesToWrite[i * 8 ... i * 8 + 7]
 
                         // FIXME: doesn't work as the custom commands C1 or A5 for other chips
-                        self.connectedTag?.extendedWriteSingleBlock(requestFlags: [.highDataRate], blockNumber: startBlock + i, dataBlock: blockToWrite) { error in
+                        self.connectedTag?.extendedWriteSingleBlock(requestFlags: .highDataRate, blockNumber: startBlock + i, dataBlock: blockToWrite) { error in
 
                             if error != nil {
                                 self.main.log("NFC: error while writing block 0x\(String(format: "%X", startBlock + i)) (\(i + 1) of \(blocks)) \(blockToWrite.hex) at 0x\(String(format: "%X", (startBlock + i) * 8)): \(error!.localizedDescription)")
@@ -450,8 +465,8 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                             if i == blocks - 1 {
 
                                 // Lock
-                                self.connectedTag?.customCommand(requestFlags: [.highDataRate], customCommandCode: 0xA2, customRequestParameters: Data(self.sensor.type.backdoor)) { (customResponse: Data, error: Error?) in
-                                    self.main.debugLog("NFC: lock command response: 0x\(customResponse.hex), error: \(error?.localizedDescription ?? "none")")
+                                self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: 0xA2, customRequestParameters: Data(self.sensor.type.backdoor)) { response, error in
+                                    self.main.debugLog("NFC: lock command response: 0x\(response.hex), error: \(error?.localizedDescription ?? "none")")
                                     handler(address, data, error)
                                 }
 
@@ -481,7 +496,9 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                         for j in startIndex ... endIndex { dataBlocks.append(blocksToWrite[j - startIndex]) }
 
                         // TODO: write to 16-bit addresses as the custom cummand C4 for other chips
-                        self.connectedTag?.writeMultipleBlocks(requestFlags: [.highDataRate, .address], blockRange: blockRange, dataBlocks: dataBlocks) { error in // TEST
+                        self.connectedTag?.writeMultipleBlocks(requestFlags: [.highDataRate, .address], blockRange: blockRange, dataBlocks: dataBlocks) {
+
+                            error in // TEST
 
                             if error != nil {
                                 self.main.log("NFC: error while writing multiple blocks 0x\(String(format: "%X", startIndex)) - 0x\(String(format: "%X", endIndex))) \(dataBlocks.reduce("", { $0 + $1.hex })) at 0x\(String(format: "%X", (startBlock + i * requestBlocks) * 8)): \(error!.localizedDescription)")
@@ -494,8 +511,11 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                             if i == requests - 1 {
 
                                 // Lock
-                                self.connectedTag?.customCommand(requestFlags: [.highDataRate], customCommandCode: 0xA2, customRequestParameters: Data(self.sensor.type.backdoor)) { (customResponse: Data, error: Error?) in
-                                    self.main.debugLog("NFC: lock command response: 0x\(customResponse.hex), error: \(error?.localizedDescription ?? "none")")
+                                self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: 0xA2, customRequestParameters: Data(self.sensor.type.backdoor)) {
+
+                                    response, error in
+
+                                    self.main.debugLog("NFC: lock command response: 0x\(response.hex), error: \(error?.localizedDescription ?? "none")")
                                     handler(address, data, error)
                                 }
                             }
