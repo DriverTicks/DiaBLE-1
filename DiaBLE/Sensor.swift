@@ -102,7 +102,7 @@ class Sensor: ObservableObject {
     @Published var lastReadingDate = Date()
     @Published var age: Int = 0
     @Published var maxLife: Int = 0
-    @Published var reinitializations: Int = 0
+    @Published var initializations: Int = 0
 
     var crcReport: String = ""    // TODO
 
@@ -154,7 +154,7 @@ class Sensor: ObservableObject {
             guard fram.count > 318 else { return }
             age = Int(fram[317]) << 8 + Int(fram[316])
             let startDate = lastReadingDate - Double(age) * 60
-            reinitializations = Int(fram[318])
+            initializations = Int(fram[318])
 
             guard fram.count > 327 else { return }
             // Int(fram[322]) << 8 + Int(fram[323]) correspond to patchInfo[2...3]

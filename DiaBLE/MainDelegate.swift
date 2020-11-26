@@ -188,7 +188,7 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
         }
 
         log("Sensor state: \(sensor.state)")
-        if sensor.reinitializations > 0 { log("Sensor reinitializations: \(sensor.reinitializations)") }
+        if sensor.initializations > 0 { log("Sensor initializations: \(sensor.initializations)") }
         log("Sensor region: \(SensorRegion(rawValue: sensor.region)?.description ?? "unknown")\(sensor.region != 0 ? " (0x" + String(format: "%02X", sensor.region) + ")" : "")")
         if sensor.maxLife > 0 { log("Sensor maximum life: \(String(format: "%.2f", Double(sensor.maxLife)/60/24)) days (\(sensor.maxLife) minutes)") }
 

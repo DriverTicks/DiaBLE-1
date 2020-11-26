@@ -23,6 +23,20 @@ extension Data {
         str.removeLast()
         return str
     }
+
+    var crc16: UInt16 {
+        var crc: UInt32 = 0xffff
+        for byte in self {
+            for i in 0...7 {
+                crc <<= 1
+                if ((crc >> 16) & 1) ^ (UInt32(byte >> i) & 1) == 1 {
+                    crc ^= 0x1021
+                }
+            }
+        }
+        return UInt16(crc & 0xffff)
+    }
+
 }
 
 
