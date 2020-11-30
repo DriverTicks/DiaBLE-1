@@ -100,9 +100,13 @@ extension Int {
     }
     var shortFormattedInterval: String {
         let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.day, .hour]
+        formatter.allowedUnits = [.day]
+        formatter.unitsStyle = .short
+        let days = formatter.string(from: TimeInterval(self * 60))!
+        formatter.allowedUnits = [.hour]
         formatter.unitsStyle = .abbreviated
-        return formatter.string(from: TimeInterval(self * 60))!
+        let hours = formatter.string(from: TimeInterval((self * 60) % 86400))!
+        return "\(days) \(hours)"
     }
 }
 
