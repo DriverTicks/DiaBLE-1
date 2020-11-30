@@ -69,6 +69,8 @@ class HealthKit {
             if let error = error {
                 self.main.log("HealthKit: error while saving: \(error.localizedDescription)")
             }
+            // FIXME: double entries
+            self.main.log("HealthKit samples count \(samples.count), \(samples)")
             self.lastDate = samples.last?.endDate
         }
     }

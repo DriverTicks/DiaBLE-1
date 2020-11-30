@@ -194,6 +194,12 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
             log("Factory history: \(factoryHistory.map{$0.value})")
             log("Historic temperatures: \(factoryHistory.map{Double(String(format: "%.1f", $0.temperature))!})")
 
+            // TODO
+            debugLog("Trend has errors: \(sensor.trend.map{$0.hasError})")
+            debugLog("Trend errors: \(sensor.trend.map{$0.error})")
+            debugLog("History has errors: \(sensor.history.map{$0.hasError})")
+            debugLog("History errors: \(sensor.history.map{$0.error})")
+
             if history.rawTrend.count > 0 {
                 sensor.currentGlucose = -history.rawTrend[0].value
             }

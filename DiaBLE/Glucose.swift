@@ -21,6 +21,8 @@ struct Glucose: Identifiable, Codable {
     let raw: Int
     let rawTemperature: Int
     let temperatureAdjustment: Int
+    let hasError: Bool
+    let error: Int
     var value: Int = 0
     var temperature: Double = 0
     var calibration: Calibration? {
@@ -32,7 +34,7 @@ struct Glucose: Identifiable, Codable {
     }
     var source: String = ""
 
-    init(raw: Int, rawTemperature: Int = 0, temperatureAdjustment: Int = 0, calibration: Calibration? = nil, id: Int = 0, date: Date = Date()) {
+    init(raw: Int, rawTemperature: Int = 0, temperatureAdjustment: Int = 0, calibration: Calibration? = nil, id: Int = 0, date: Date = Date(), hasError: Bool = false, error: Int = 0) {
         self.id = id
         self.date = date
         self.raw = raw
@@ -40,6 +42,8 @@ struct Glucose: Identifiable, Codable {
         self.rawTemperature = rawTemperature
         self.temperatureAdjustment = temperatureAdjustment
         self.calibration = calibration
+        self.hasError = hasError
+        self.error = error
     }
 
     init(bytes: [UInt8], calibration: Calibration? = nil, id: Int = 0, date: Date = Date()) {

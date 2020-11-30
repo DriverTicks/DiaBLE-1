@@ -169,14 +169,17 @@ class Sensor: ObservableObject {
             for i in 0 ... 15 {
                 var j = trendIndex - 1 - i
                 if j < 0 { j += 16 }
-                let raw = (Int(fram[29 + j * 6]) & 0x1F) << 8 + Int(fram[28 + j * 6])
-                let temperature = (Int(fram[32 + j * 6]) & 0x3F) << 8 + Int(fram[31 + j * 6])
-                var temperatureAdjustment = readBits(fram, 28 + j * 6, 0x26, 0x9) << 2
-                let negativeAdjustment = readBits(fram, 28 + j * 6, 0x2f, 0x1)
+                let offset = 28 + j * 6
+                let raw = readBits(fram, offset, 0, 0xe)
+                let error = UInt16(readBits(fram, offset, 0xe, 0xb)) & 0x1ff // TODO: test
+                let hasError = readBits(fram, offset, 0x19, 0x1) != 0
+                let temperature = readBits(fram, offset, 0x1a, 0xc) << 2
+                var temperatureAdjustment = readBits(fram, offset, 0x26, 0x9) << 2
+                let negativeAdjustment = readBits(fram, offset, 0x2f, 0x1)
                 if negativeAdjustment != 0 { temperatureAdjustment = -temperatureAdjustment }
                 let id = age - i
                 let date = startDate + Double(age - i) * 60
-                trend.append(Glucose(raw: raw, rawTemperature: temperature, temperatureAdjustment: temperatureAdjustment, id: id, date: date))
+                trend.append(Glucose(raw: raw, rawTemperature: temperature, temperatureAdjustment: temperatureAdjustment, id: id, date: date, hasError: hasError, error: Int(error)))
             }
 
             // FRAM is updated with a 3 minutes delay:
@@ -194,14 +197,18 @@ class Sensor: ObservableObject {
             for i in 0 ... 31 {
                 var j = historyIndex - 1 - i
                 if j < 0 { j += 32 }
-                let raw = (Int(fram[125 + j * 6]) & 0x1F) << 8 + Int(fram[124 + j * 6])
-                let temperature = (Int(fram[128 + j * 6]) & 0x3F) << 8 + Int(fram[127 + j * 6])
-                var temperatureAdjustment = readBits(fram, 124 + j * 6, 0x26, 0x9) << 2
-                let negativeAdjustment = readBits(fram, 124 + j * 6, 0x2f, 0x1)
+                let offset = 124 + j * 6
+                let raw = readBits(fram, offset, 0, 0xe)
+                let error = UInt16(readBits(fram, offset, 0xe, 0xb)) & 0x1ff // TODO: test
+                let hasError = readBits(fram, offset, 0x19, 0x1) != 0
+                let temperature = readBits(fram, offset, 0x1a, 0xc) << 2
+                var temperatureAdjustment = readBits(fram, offset, 0x26, 0x9) << 2
+                let negativeAdjustment = readBits(fram, offset, 0x2f, 0x1)
                 if negativeAdjustment != 0 { temperatureAdjustment = -temperatureAdjustment }
                 let id = age - delay - i * 15
                 let date = readingDate - Double(i) * 15 * 60
-                history.append(Glucose(raw: raw, rawTemperature: temperature, temperatureAdjustment: temperatureAdjustment, id: id, date: date))}
+                history.append(Glucose(raw: raw, rawTemperature: temperature, temperatureAdjustment: temperatureAdjustment, id: id, date: date, hasError: hasError, error: Int(error)))
+            }
         }
     }
 
