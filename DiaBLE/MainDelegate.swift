@@ -86,9 +86,9 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
                 } else {
                     self.log.text.append(" \n\(msg)\n")
                 }
+                print(msg)
             }
         }
-        print(msg)
     }
 
 
