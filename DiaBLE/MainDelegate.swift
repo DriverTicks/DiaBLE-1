@@ -112,12 +112,15 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
         }
     }
 
-    
-    public func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        let sceneConfiguration = UISceneConfiguration(name: "LaunchConfiguration", sessionRole: connectingSceneSession.role)
-        sceneConfiguration.delegateClass = MainDelegate.self
-        return sceneConfiguration
-    }
+
+    // FIXME: causes double instantiation of MainDelegate
+
+//    public func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+//        let sceneConfiguration = UISceneConfiguration(name: "LaunchConfiguration", sessionRole: connectingSceneSession.role)
+//        sceneConfiguration.delegateClass = MainDelegate.self
+//        return sceneConfiguration
+//    }
+
 
     public func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         if let shortcutItem = connectionOptions.shortcutItem {

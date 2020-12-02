@@ -87,9 +87,9 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
                 } else {
                     self.log.text.append(" \n\(msg)\n")
                 }
+                print(msg)
             }
         }
-        print(msg)
     }
 
 
