@@ -1,8 +1,6 @@
 FIXME
 -----
 
-* iOS 14:
-   - the 'Scan Sensor' shortcut item is missing from the launchOptions keys
 * Apple Watch app:
   - the Monitor counter doesn't update on rescan
   - readings aren't received in background but Bluetooth connections aren't closed until shutdown, even when the app is removed from the Dock
