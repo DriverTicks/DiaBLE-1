@@ -321,8 +321,12 @@ class Libre: Transmitter {
 
                     }
 
+                    // TODO: reverse
+                    sensor!.trend = main.history.rawTrend
+                    sensor!.history = main.history.rawValues
+                    // TODO: use general applyCalibration()
 
-                    // TODO: backfill all the latest 8 hours
+                    // TODO: complete backfill
 
                     main.status("\(sensor!.type)  +  BLE")
 

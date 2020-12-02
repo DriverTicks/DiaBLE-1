@@ -384,7 +384,7 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
         currentGlucose = abs(currentGlucose)
 
         if currentGlucose > 0 && (currentGlucose > Int(settings.alarmHigh) || currentGlucose < Int(settings.alarmLow)) {
-            log("ALARM: current glucose: \(currentGlucose) (settings: high: \(Int(settings.alarmHigh)), low: \(Int(settings.alarmLow)))")
+            log("ALARM: current glucose: \(currentGlucose) (settings: high: \(Int(settings.alarmHigh)), low: \(Int(settings.alarmLow)), muted: \(settings.mutedAudio ? "yes" : "no")")
             playAlarm()
             //            if (settings.calendarTitle == "" || !settings.calendarAlarmIsOn) && !settings.disabledNotifications { // TODO: notifications settings
             //                title += "  \(settings.glucoseUnit)"

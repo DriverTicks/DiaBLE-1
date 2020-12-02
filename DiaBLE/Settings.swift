@@ -35,6 +35,7 @@ class Settings: ObservableObject {
         "patchUid": Data(),
         "patchInfo": Data(),
 
+        "calibrating": false,
         "calibration": try! JSONEncoder().encode(Calibration()),
         "oopCalibration": try! JSONEncoder().encode(Calibration())
     ]
@@ -153,6 +154,10 @@ class Settings: ObservableObject {
 
     @Published var patchInfo: PatchInfo = UserDefaults.standard.data(forKey: "patchInfo")! {
         didSet { UserDefaults.standard.set(self.patchInfo, forKey: "patchInfo") }
+    }
+
+    @Published var calibrating: Bool = UserDefaults.standard.bool(forKey: "calibrating") {
+        didSet { UserDefaults.standard.set(self.calibrating, forKey: "calibrating") }
     }
 
     @Published var calibration: Calibration = try! JSONDecoder().decode(Calibration.self, from: UserDefaults.standard.data(forKey: "calibration")!) {
