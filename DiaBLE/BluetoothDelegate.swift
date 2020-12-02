@@ -320,7 +320,7 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
 
     public func centralManager(_ manager: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
         let name = peripheral.name ?? "an unnamed peripheral"
-        app.device.state = peripheral.state
+        app.device?.state = peripheral.state
         log("Bluetooth: \(name) has disconnected.")
         app.deviceState = "Disconnected"
         if error != nil {

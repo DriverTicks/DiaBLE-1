@@ -117,14 +117,16 @@ struct Monitor: View {
 
                 }
 
-                Toggle(isOn: $settings.calibrating) {
+                Toggle(isOn: $settings.calibrating.animation()) {
                     Text("Calibration")
                 }
                 .toggleStyle(SwitchToggleStyle(tint: Color.purple))
                 .onChange(of: settings.calibrating) { calibrating in
 
                     if !calibrating {
-                        editingCalibration = false
+                        withAnimation {
+                            editingCalibration = false
+                        }
 
                     } else {
 
@@ -279,7 +281,7 @@ struct Monitor: View {
                         }
                     }
                     label: {
-                        Button("Parameters", action: { showingCalibrationParameters.toggle() }) .foregroundColor(.purple)
+                        Button("Parameters", action: { withAnimation { showingCalibrationParameters.toggle() } }) .foregroundColor(.purple)
                     }
                     .accentColor(.purple)
 
