@@ -92,7 +92,7 @@ struct Graph: View {
                                 }
                             }
                         }
-                    }.stroke(Color.orange).opacity(0.6)
+                    }.stroke(Color.orange).opacity(0.75)
                 }
             }
 

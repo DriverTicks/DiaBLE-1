@@ -142,7 +142,7 @@ struct Monitor: View {
 
                         DisclosureGroup(isExpanded: $showingCalibrationParameters) {
 
-                            if history.calibratedValues.count > 0 {
+                            if app.calibration != Calibration() {
                                 VStack(spacing: 6) {
                                     HStack {
                                         VStack(spacing: 0) {
@@ -221,12 +221,13 @@ struct Monitor: View {
                                     }
                                 }.font(.footnote)
                                 .keyboardType(.numbersAndPunctuation)
+
                             }
 
-
-                            if app.sensor != nil && (self.editingCalibration || history.calibratedValues.count == 0) {
+                            if editingCalibration || history.calibratedValues.count == 0 {
                                 Spacer()
                                 HStack(spacing: 20) {
+
                                     if self.editingCalibration {
                                         Button(action: {
                                             withAnimation {
@@ -256,21 +257,23 @@ struct Monitor: View {
                                         ) { Text("Load").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
                                     }
 
-                                    Button(action: {
-                                        withAnimation {
-                                            self.editingCalibration = false
+                                    if app.calibration != settings.oopCalibration {
+                                        Button(action: {
+                                            withAnimation {
+                                                self.editingCalibration = false
+                                            }
+                                            self.app.calibration = self.settings.oopCalibration
+                                            self.settings.calibration = Calibration()
+                                            self.app.main.applyCalibration(sensor: self.app.sensor)
                                         }
-                                        self.app.calibration = self.settings.oopCalibration
-                                        self.settings.calibration = Calibration()
-                                        self.app.main.applyCalibration(sensor: self.app.sensor)
+                                        ) { Text("Restore OOP").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
                                     }
-                                    ) { Text("Restore OOP").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
 
                                 }.font(.footnote)
                             }
                         }
                         label: {
-                            Button("Parameters", action: { withAnimation { showingCalibrationParameters.toggle() } }) .foregroundColor(.purple)
+                            Button("Parameters", action: { withAnimation { showingCalibrationParameters.toggle() } }).foregroundColor(.purple)
                         }
 
                     }

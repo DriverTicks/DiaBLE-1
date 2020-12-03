@@ -279,16 +279,6 @@ class Libre: Transmitter {
                     main.history.factoryTrend = rawTrend.map { factoryGlucose(raw: $0, calibrationInfo: main.settings.activeSensorCalibrationInfo) }
                     main.log("BLE merged trend: \(main.history.factoryTrend.map{$0.value})")
 
-                    // TODO: use general applyCalibration()
-                    if main.app.calibration.offsetOffset != 0.0 {
-                        var calibratedTrend = rawTrend
-                        for i in 0 ..< calibratedTrend.count {
-                            calibratedTrend[i].calibration = main.app.calibration
-                        }
-                        main.history.calibratedTrend = calibratedTrend
-                        // currentGlucose = -self.history.calibratedTrend[0].value
-                    }
-
                     // TODO: compute delta and update trend arrow
 
                     var rawValues = [Glucose](main.history.rawValues)
@@ -310,21 +300,12 @@ class Libre: Transmitter {
                             main.history.values = history
                         }
 
-                        // TODO: use general applyCalibration()
-                        if main.app.calibration.offsetOffset != 0.0 {
-                            var calibratedHistory = rawValues
-                            for i in 0 ..< calibratedHistory.count {
-                                calibratedHistory[i].calibration = main.app.calibration
-                            }
-                            main.history.calibratedValues = calibratedHistory
-                        }
-
                     }
 
                     // TODO: reverse
                     sensor!.trend = main.history.rawTrend
                     sensor!.history = main.history.rawValues
-                    // TODO: use general applyCalibration()
+                    main.applyCalibration(sensor: sensor)
 
                     // TODO: complete backfill
 

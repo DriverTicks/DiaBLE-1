@@ -200,8 +200,8 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
             debugLog("History has errors: \(sensor.history.map{$0.hasError})")
             debugLog("History errors: \(sensor.history.map{$0.error})")
 
-            if history.rawTrend.count > 0 {
-                sensor.currentGlucose = -history.rawTrend[0].value
+            if history.factoryTrend.count > 0 {
+                sensor.currentGlucose = -history.factoryTrend[0].value
             }
 
             log("Sending sensor data to \(settings.oopServer.siteURL)/\(settings.oopServer.calibrationEndpoint)...")
@@ -354,33 +354,45 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
 
         if let sensor = sensor, settings.calibrating {
 
-            if sensor.history.count > 0 {
+            if sensor.history.count > 0 && app.calibration != Calibration() {
 
                 var calibratedTrend = sensor.trend
                 for i in 0 ..< calibratedTrend.count {
-                    calibratedTrend[i].calibration = self.app.calibration
+                    calibratedTrend[i].calibration = app.calibration
                 }
 
                 var calibratedHistory = sensor.history
                 for i in 0 ..< calibratedHistory.count {
-                    calibratedHistory[i].calibration = self.app.calibration
+                    calibratedHistory[i].calibration = app.calibration
                 }
 
                 self.history.calibratedTrend = calibratedTrend
                 self.history.calibratedValues = calibratedHistory
                 if calibratedTrend.count > 0 {
                     sensor.currentGlucose = -calibratedTrend[0].value
-                    self.app.currentGlucose = sensor.currentGlucose
+                    app.currentGlucose = sensor.currentGlucose
                 }
             }
 
         } else {
+
             self.history.calibratedTrend = []
             self.history.calibratedValues = []
+
+            if let sensor = sensor {
+                if history.factoryTrend.count > 0 {
+                    sensor.currentGlucose = history.factoryTrend[0].value
+                }
+                if history.values.count > 0 && history.values[0].value > 0 {
+                    if history.factoryTrend.count == 0 || (history.factoryTrend.count > 0 && history.factoryTrend[0].id < history.values[0].id) {
+                        sensor.currentGlucose = history.factoryValues[0].value
+                    }
+                }
+                app.currentGlucose = sensor.currentGlucose
+            }
         }
 
     }
-
 
     /// currentGlucose is negative when set to the last trend raw value (no online connection)
     func didParseSensor(_ sensor: Sensor) {
