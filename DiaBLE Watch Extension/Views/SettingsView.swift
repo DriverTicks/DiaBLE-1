@@ -78,9 +78,9 @@ struct SettingsView: View {
 
                 Spacer()
 
-                Button(action: {
+                Button {
                     settings.mutedAudio.toggle()
-                }) {
+                } label: {
                     Image(systemName: settings.mutedAudio ? "speaker.slash.fill" : "speaker.2.fill").resizable().frame(width: 20, height: 20).foregroundColor(.blue)
                 }
 

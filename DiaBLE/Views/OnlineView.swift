@@ -35,7 +35,9 @@ struct OnlineView: View {
 
                         VStack(spacing: 0) {
                             // TODO: reload web page
-                            Button(action: { app.main.rescan() }) {
+                            Button {
+                                app.main.rescan()
+                            } label: {
                                 Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).foregroundColor(.accentColor)
                             }
 
@@ -47,7 +49,7 @@ struct OnlineView: View {
                                 }.foregroundColor(.orange).font(Font.caption.monospacedDigit())
                         }
 
-                        Button(action: {
+                        Button {
                             if app.main.nfcReader.isNFCAvailable {
                                 app.main.nfcReader.startSession()
                                 if let healthKit = app.main.healthKit { healthKit.read() }
@@ -55,9 +57,10 @@ struct OnlineView: View {
                             } else {
                                 showingNFCAlert = true
                             }
-                        }) {
+                        } label: {
                             Image("NFC").renderingMode(.template).resizable().frame(width: 39, height: 27).padding(.bottom, 12)
-                        }.alert(isPresented: $showingNFCAlert) {
+                        }
+                        .alert(isPresented: $showingNFCAlert) {
                             Alert(
                                 title: Text("NFC not supported"),
                                 message: Text("This device doesn't allow scanning the Libre."))

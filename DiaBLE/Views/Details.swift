@@ -222,7 +222,9 @@ struct Details: View {
             VStack(spacing: 0) {
 
                 // FIXME: updates only every 3-4 seconds
-                Button(action: { app.main.rescan() }) {
+                Button {
+                    app.main.rescan()
+                } label: {
                     Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).foregroundColor(.accentColor)
                 }
 

@@ -23,16 +23,18 @@ struct OnlineView: View {
 
                     VStack(spacing: 0) {
 
-                        Button(action: { app.main.rescan() }) {
-                            Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 16, height: 16)
-                                .foregroundColor(.blue)
-                            Text(app.deviceState == "Connected" && (readingCountdown > 0 || app.status.hasSuffix("sensor")) ?
-                                    "\(readingCountdown) s" : "...")
-                                .fixedSize()
-                                .onReceive(timer) { _ in
-                                    readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
-                                }.foregroundColor(.orange).font(Font.footnote.monospacedDigit())
-                        }
+                        Button {
+                            app.main.rescan()
+                        } label: {
+                                Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 16, height: 16)
+                                    .foregroundColor(.blue)
+                                Text(app.deviceState == "Connected" && (readingCountdown > 0 || app.status.hasSuffix("sensor")) ?
+                                        "\(readingCountdown) s" : "...")
+                                    .fixedSize()
+                                    .onReceive(timer) { _ in
+                                        readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
+                                    }.foregroundColor(.orange).font(Font.footnote.monospacedDigit())
+                            }
                     }
                 }
 

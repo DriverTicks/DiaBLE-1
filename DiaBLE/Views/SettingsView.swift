@@ -19,7 +19,10 @@ struct SettingsView: View {
                 VStack(spacing: 20) {
                     VStack {
                         HStack(spacing: 0) {
-                            Button(action: {} ) { Image("Bluetooth").renderingMode(.template).resizable().frame(width: 32, height: 32) }
+                            Button {
+                            } label: {
+                                Image("Bluetooth").renderingMode(.template).resizable().frame(width: 32, height: 32)
+                            }
                             Picker(selection: $settings.preferredTransmitter, label: Text("Preferred")) {
                                 ForEach(TransmitterType.allCases) { t in
                                     Text(t.name).tag(t)
@@ -27,7 +30,9 @@ struct SettingsView: View {
                             }.pickerStyle(SegmentedPickerStyle())
                         }
                         HStack(spacing: 0) {
-                            Button(action: {} ) { Image(systemName: "line.horizontal.3.decrease.circle").resizable().frame(width: 20, height: 20).padding(.leading, 6)
+                            Button {
+                            } label: {
+                                Image(systemName: "line.horizontal.3.decrease.circle").resizable().frame(width: 20, height: 20).padding(.leading, 6)
                             }
                             TextField("device name pattern", text: $settings.preferredDevicePattern)
                                 .padding(.horizontal, 12)
@@ -58,10 +63,10 @@ struct SettingsView: View {
 
                 Spacer()
 
-                Button(action: {
+                Button {
                     app.selectedTab = (settings.preferredTransmitter != .none) ? .monitor : .log
                     app.main.rescan()
-                }) {
+                } label: {
                     Text("Rescan").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                 }
 
@@ -88,37 +93,36 @@ struct SettingsView: View {
                 }.padding(.horizontal, 40)
 
                 HStack(spacing: 24) {
-                    Button(action: {
+                    Button {
                         settings.mutedAudio.toggle()
-                    }) {
+                    } label: {
                         Image(systemName: settings.mutedAudio ? "speaker.slash.fill" : "speaker.2.fill").resizable().frame(width: 24, height: 24).foregroundColor(.accentColor)
                     }
 
-                    Button(action: {
+                    Button {
                         settings.disabledNotifications.toggle()
                         if settings.disabledNotifications {
                             UIApplication.shared.applicationIconBadgeNumber = 0
                         } else {
                             UIApplication.shared.applicationIconBadgeNumber = app.currentGlucose
                         }
-                    }) {
+                    } label: {
                         Image(systemName: settings.disabledNotifications ? "zzz" : "app.badge.fill").resizable().frame(width: 24, height: 24).foregroundColor(.accentColor)
                     }
 
-                    Button(action: {
+                    Button {
                         showingCalendarPicker = true
-                    }) {
+                    } label: {
                         Image(systemName: settings.calendarTitle != "" ? "calendar.circle.fill" : "calendar.circle").resizable().frame(width: 32, height: 32).foregroundColor(.accentColor)
                     }
                     .popover(isPresented: $showingCalendarPicker, arrowEdge: .bottom) {
                         VStack {
                             Section {
-                                Button(action: {
+                                Button {
                                     settings.calendarTitle = ""
                                     showingCalendarPicker = false
                                     app.main.eventKit?.sync()
-                                }
-                                ) { Text("None").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
+                                } label: { Text("None").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
                                 .disabled(settings.calendarTitle == "")
                             }
                             Section {
@@ -136,11 +140,12 @@ struct SettingsView: View {
                                 }
                             }
                             Section {
-                                Button(action: {
+                                Button {
                                     showingCalendarPicker = false
                                     app.main.eventKit?.sync()
+                                } label: {
+                                    Text(settings.calendarTitle == "" ? "Don't remind" : "Remind").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)).animation(.default)
                                 }
-                                ) { Text(settings.calendarTitle == "" ? "Don't remind" : "Remind").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)).animation(.default) }
 
                             }.padding(.top, 40)
                         }.padding(60)

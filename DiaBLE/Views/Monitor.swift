@@ -129,11 +129,6 @@ struct Monitor: View {
                             withAnimation {
                                 editingCalibration = false
                             }
-
-                        } else {
-
-                            // TODO
-
                         }
                         app.main.applyCalibration(sensor: app.sensor)
                     }
@@ -229,70 +224,74 @@ struct Monitor: View {
                                 HStack(spacing: 20) {
 
                                     if editingCalibration {
-                                        Button(action: {
-                                            withAnimation {
-                                                editingCalibration = false
-                                            }
+                                        Button {
+                                            withAnimation { editingCalibration = false }
                                             settings.calibration = Calibration()
+                                        } label: {
+                                            Text("Use").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
-                                        ) { Text("Use").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
 
-                                        Button(action: {
-                                            withAnimation {
-                                                editingCalibration = false
-                                            }
+                                        Button {
+                                            withAnimation { editingCalibration = false }
                                             settings.calibration = app.calibration
+                                        } label: {
+                                            Text("Save").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
-                                        ) { Text("Save").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
                                     }
 
                                     if settings.calibration != Calibration() {
-                                        Button(action: {
-                                            withAnimation {
-                                                editingCalibration = false
-                                            }
+                                        Button {
+                                            withAnimation { editingCalibration = false }
                                             app.calibration = settings.calibration
                                             app.main.applyCalibration(sensor: app.sensor)
+                                        } label: {
+                                            Text("Load").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
-                                        ) { Text("Load").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
                                     }
 
                                     if app.calibration != settings.oopCalibration {
-                                        Button(action: {
-                                            withAnimation {
-                                                editingCalibration = false
-                                            }
+                                        Button {
+                                            withAnimation { editingCalibration = false }
                                             app.calibration = settings.oopCalibration
                                             settings.calibration = Calibration()
                                             app.main.applyCalibration(sensor: app.sensor)
+                                        } label: {
+                                            Text("Restore OOP").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
-                                        ) { Text("Restore OOP").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
                                     }
 
                                 }.font(.footnote)
                             }
-                        }
-                        label: {
-                            Button("Parameters", action: { withAnimation { showingCalibrationParameters.toggle() } }).foregroundColor(.purple)
+
+                        } label: {
+                            Button {
+                                withAnimation { showingCalibrationParameters.toggle() }
+                            } label: {
+                                Text("Parameters")}.foregroundColor(.purple)
                         }
 
                     }
+
                 }.accentColor(.purple)
 
                 Spacer()
 
                 HStack {
 
-                    Button(action: { app.main.rescan() }) {
+                    Button {
+                        app.main.rescan()
+
+                    } label: {
                         Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).padding(.bottom, 8).foregroundColor(.accentColor)
                     }
 
                     if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
-                        Button(action: {
+                        Button {
                             app.main.centralManager.stopScan()
                             app.main.status("Stopped scanning")
                             app.main.log("Bluetooth: stopped scanning")
-                        }) { Image(systemName: "stop.circle").resizable().frame(width: 32, height: 32)
+                        } label: {
+                            Image(systemName: "stop.circle").resizable().frame(width: 32, height: 32)
                         }.padding(.bottom, 8).foregroundColor(.red)
                     }
 
@@ -304,15 +303,16 @@ struct Monitor: View {
             .navigationTitle("DiaBLE  \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)  -  Monitor")
             .navigationBarItems(
                 trailing:
-                    Button(action: {
+                    Button {
                         if app.main.nfcReader.isNFCAvailable {
                             app.main.nfcReader.startSession()
                         } else {
                             showingNFCAlert = true
                         }
-                    }) {
+                    } label: {
                         Image("NFC").renderingMode(.template).resizable().frame(width: 39, height: 27).padding(4)
-                    }.alert(isPresented: $showingNFCAlert) {
+                    }
+                    .alert(isPresented: $showingNFCAlert) {
                         Alert(
                             title: Text("NFC not supported"),
                             message: Text("This device doesn't allow scanning the Libre."))

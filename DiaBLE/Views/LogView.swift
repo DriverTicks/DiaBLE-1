@@ -26,21 +26,24 @@ struct LogView: View {
 
                     VStack(spacing: 0) {
 
-                        Button(action: {
+                        Button {
                             if app.main.nfcReader.isNFCAvailable {
                                 app.main.nfcReader.startSession()
                             } else {
                                 showingNFCAlert = true
                             }
-                        }) {
+                        } label: {
                             Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18).padding(EdgeInsets(top: 10, leading: 6, bottom: 14, trailing: 0))
-                        }.alert(isPresented: $showingNFCAlert) {
+                        }
+                        .alert(isPresented: $showingNFCAlert) {
                             Alert(
                                 title: Text("NFC not supported"),
                                 message: Text("This device doesn't allow scanning the Libre."))
                         }
 
-                        Button(action: { app.main.rescan() }) {
+                        Button {
+                            app.main.rescan()
+                        } label: {
                             VStack {
                                 Image("Bluetooth").renderingMode(.template).resizable().frame(width: 32, height: 32)
                                 Text("Scan")
@@ -60,60 +63,70 @@ struct LogView: View {
 
                     // Same as in Monitor
                     if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
-                        Button(action: {
+                        Button {
                             app.main.centralManager.stopScan()
                             app.main.status("Stopped scanning")
                             app.main.log("Bluetooth: stopped scanning")
-                        }) { Image(systemName: "stop.circle").resizable().frame(width: 32, height: 32)
+                        } label: {
+                            Image(systemName: "stop.circle").resizable().frame(width: 32, height: 32)
                         }.foregroundColor(.blue)
                     }
 
                     Spacer()
 
-                    Button(action: {
+                    Button {
                         settings.debugLevel = 1 - settings.debugLevel
-                    }) { VStack {
-                        Image(systemName: "wrench.fill").resizable().frame(width: 24, height: 24)
-                        Text(settings.debugLevel == 1 ? "Devel" : "Basic").font(.caption).offset(y: -6)
+                    } label: {
+                        VStack {
+                            Image(systemName: "wrench.fill").resizable().frame(width: 24, height: 24)
+                            Text(settings.debugLevel == 1 ? "Devel" : "Basic").font(.caption).offset(y: -6)
+                        }
                     }
-                    }.background(settings.debugLevel == 1 ? Color.accentColor : Color.clear)
+                    .background(settings.debugLevel == 1 ? Color.accentColor : Color.clear)
                     .foregroundColor(settings.debugLevel == 1 ? .black : .accentColor)
                     .padding(.bottom, 6)
 
-                    Button(action: { UIPasteboard.general.string = log.text }) {
+                    Button {
+                        UIPasteboard.general.string = log.text
+                    } label: {
                         VStack {
                             Image(systemName: "doc.on.doc").resizable().frame(width: 24, height: 24)
                             Text("Copy").offset(y: -6)
                         }
                     }
 
-                    Button(action: { log.text = "Log cleared \(Date().local)\n" }) {
+                    Button {
+                        log.text = "Log cleared \(Date().local)\n"
+                    } label: {
                         VStack {
                             Image(systemName: "clear").resizable().frame(width: 24, height: 24)
                             Text("Clear").offset(y: -6)
                         }
                     }
 
-                    Button(action: {
+                    Button {
                         settings.reversedLog.toggle()
                         log.text = log.text.split(separator:"\n").reversed().joined(separator: "\n")
                         if !settings.reversedLog { log.text.append(" \n") }
-                    }) { VStack {
-                        Image(systemName: "backward.fill").resizable().frame(width: 12, height: 12).offset(y: 5)
-                        Text(" REV ").offset(y: -2)
+                    } label: {
+                        VStack {
+                            Image(systemName: "backward.fill").resizable().frame(width: 12, height: 12).offset(y: 5)
+                            Text(" REV ").offset(y: -2)
+                        }
                     }
-                    }.background(settings.reversedLog ? Color.accentColor : Color.clear)
+                    .background(settings.reversedLog ? Color.accentColor : Color.clear)
                     .border(Color.accentColor, width: 3)
                     .cornerRadius(5)
                     .foregroundColor(settings.reversedLog ? .black : .accentColor)
 
 
-                    Button(action: {
+                    Button {
                         settings.logging.toggle()
                         app.main.log("\(settings.logging ? "Log started" : "Log stopped") \(Date().local)")
-                    }) { VStack {
-                        Image(systemName: settings.logging ? "stop.circle" : "play.circle").resizable().frame(width: 32, height: 32)
-                    }
+                    } label: {
+                        VStack {
+                            Image(systemName: settings.logging ? "stop.circle" : "play.circle").resizable().frame(width: 32, height: 32)
+                        }
                     }.foregroundColor(settings.logging ? .red : .green)
 
                     Spacer()

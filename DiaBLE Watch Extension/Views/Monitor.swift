@@ -118,18 +118,22 @@ struct Monitor: View {
 
                 Spacer()
 
-                Button(action: { app.main.rescan() }) {
+                Button {
+                    app.main.rescan()
+                } label: {
                     Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 16, height: 16).foregroundColor(.blue)
                 }
                 .frame(height: 16)
 
                 if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
                     Spacer()
-                    Button(action: {
+                    Button {
                         app.main.centralManager.stopScan()
                         app.main.status("Stopped scanning")
                         app.main.log("Bluetooth: stopped scanning")
-                    }) { Image(systemName: "stop.circle").resizable().frame(width: 16, height: 16).foregroundColor(.red) }
+                    } label: {
+                        Image(systemName: "stop.circle").resizable().frame(width: 16, height: 16).foregroundColor(.red)
+                    }
                     .frame(height: 16)
                 }
 

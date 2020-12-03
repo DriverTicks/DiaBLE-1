@@ -213,7 +213,9 @@ struct Details: View {
 
                 Spacer()
 
-                Button(action: { app.main.rescan() }) {
+                Button {
+                    app.main.rescan()
+                } label: {
                     HStack {
                         Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 24, height: 24)
                             .foregroundColor(.blue)
@@ -228,13 +230,12 @@ struct Details: View {
 
                 Spacer()
 
-                Button(action: {
+                Button {
                     let centralManager = app.main.centralManager
                     if app.device != nil {
                         centralManager.cancelPeripheralConnection(app.device.peripheral!)
                     }
-                }
-                ) {
+                } label: {
                     Image(systemName: "escape").resizable().frame(width: 22, height: 22)
                         .foregroundColor(.blue)
                 }
