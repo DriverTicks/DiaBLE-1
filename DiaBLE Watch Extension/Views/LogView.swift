@@ -24,7 +24,7 @@ struct LogView: View {
 
                 VStack(spacing: 0) {
 
-                    Button(action: { self.app.main.rescan() }) {
+                    Button(action: { app.main.rescan() }) {
                         VStack {
                             Image("Bluetooth").renderingMode(.template).resizable().frame(width: 24, height: 24)
                         }
@@ -36,16 +36,16 @@ struct LogView: View {
                             "\(readingCountdown) s" : "")
                         .fixedSize()
                         .onReceive(timer) { _ in
-                            self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
+                            readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
                         }.font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
                 }
 
                 // Same as in Monitor
                 if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
                     Button(action: {
-                        self.app.main.centralManager.stopScan()
-                        self.app.main.status("Stopped scanning")
-                        self.app.main.log("Bluetooth: stopped scanning")
+                        app.main.centralManager.stopScan()
+                        app.main.status("Stopped scanning")
+                        app.main.log("Bluetooth: stopped scanning")
                     }) { Image(systemName: "stop.circle").resizable().frame(width: 24, height: 24)
                     }.foregroundColor(.blue)
                 }
@@ -53,30 +53,30 @@ struct LogView: View {
                 Spacer()
 
                 Button(action: {
-                    self.settings.debugLevel = 1 - self.settings.debugLevel
+                    settings.debugLevel = 1 - settings.debugLevel
                 }) { ZStack {
                     RoundedRectangle(cornerRadius: 5).fill(settings.debugLevel == 1 ? Color.blue : Color.clear)
                     Image(systemName: "wrench.fill").resizable().frame(width: 22, height: 22).foregroundColor(settings.debugLevel == 1 ? .black : .blue)
                 }.frame(width: 24, height: 24)
                 }
 
-                //                Button(action: { UIPasteboard.general.string = self.log.text }) {
+                //                Button(action: { UIPasteboard.general.string = log.text }) {
                 //                    VStack {
                 //                        Image(systemName: "doc.on.doc").resizable().frame(width: 24, height: 24)
                 //                        Text("Copy").offset(y: -6)
                 //                    }
                 //                }
 
-                Button(action: { self.log.text = "Log cleared \(Date().local)\n" }) {
+                Button(action: { log.text = "Log cleared \(Date().local)\n" }) {
                     VStack {
                         Image(systemName: "clear").resizable().foregroundColor(.blue).frame(width: 24, height: 24)
                     }
                 }
 
                 Button(action: {
-                    self.settings.reversedLog.toggle()
-                    self.log.text = self.log.text.split(separator:"\n").reversed().joined(separator: "\n")
-                    if !self.settings.reversedLog { self.log.text.append(" \n") }
+                    settings.reversedLog.toggle()
+                    log.text = log.text.split(separator:"\n").reversed().joined(separator: "\n")
+                    if !settings.reversedLog { log.text.append(" \n") }
                 }) { ZStack {
                     RoundedRectangle(cornerRadius: 5).fill(settings.reversedLog ? Color.blue : Color.clear)
                     RoundedRectangle(cornerRadius: 5).stroke(settings.reversedLog ? Color.clear : Color.blue, lineWidth: 2)
@@ -85,8 +85,8 @@ struct LogView: View {
                 }
 
                 Button(action: {
-                    self.settings.logging.toggle()
-                    self.app.main.log("\(self.settings.logging ? "Log started" : "Log stopped") \(Date().local)")
+                    settings.logging.toggle()
+                    app.main.log("\(settings.logging ? "Log started" : "Log stopped") \(Date().local)")
                 }) { VStack {
                     Image(systemName: settings.logging ? "stop.circle" : "play.circle").resizable().frame(width: 24, height: 24)
                 }

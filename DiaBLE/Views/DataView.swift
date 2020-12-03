@@ -24,7 +24,7 @@ struct DataView: View {
                             "\(readingCountdown) s" : "")
                         .fixedSize()
                         .onReceive(timer) { _ in
-                            self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
+                            readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
                         }.font(Font.caption.monospacedDigit()).foregroundColor(.orange)
                 }
 
@@ -137,7 +137,7 @@ struct DataView: View {
                                 }
                                 .frame(maxWidth: .infinity, alignment: .topLeading)
                             }.foregroundColor(.red)
-                            .onAppear { if let healthKit = self.app.main?.healthKit { healthKit.read() } }
+                            .onAppear { if let healthKit = app.main?.healthKit { healthKit.read() } }
                         }
 
                         if history.nightscoutValues.count > 0 {
@@ -151,7 +151,7 @@ struct DataView: View {
                                     .frame(maxWidth: .infinity, alignment: .topLeading)
                                 }
                             }.foregroundColor(Color(UIColor.cyan))
-                            .onAppear { if let nightscout = self.app.main?.nightscout { nightscout.read() } }
+                            .onAppear { if let nightscout = app.main?.nightscout { nightscout.read() } }
                         }
                     }
                 }

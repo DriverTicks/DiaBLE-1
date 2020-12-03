@@ -9,11 +9,11 @@ struct Graph: View {
 
     func yMax() -> Double {
         let maxValues = [
-            self.history.rawValues.map{$0.value}.max() ?? 0,
-            self.history.factoryValues.map{$0.value}.max() ?? 0,
-            self.history.values.map{$0.value}.max() ?? 0,
-            self.history.calibratedValues.map{$0.value}.max() ?? 0,
-            Int(self.settings.targetHigh + 20)
+            history.rawValues.map{$0.value}.max() ?? 0,
+            history.factoryValues.map{$0.value}.max() ?? 0,
+            history.values.map{$0.value}.max() ?? 0,
+            history.calibratedValues.map{$0.value}.max() ?? 0,
+            Int(settings.targetHigh + 20)
         ]
         return Double(maxValues.max()!)
     }
@@ -27,30 +27,30 @@ struct Graph: View {
                 Path() { path in
                     let width  = Double(geometry.size.width) - 60.0
                     let height = Double(geometry.size.height)
-                    let yScale = (height - 20.0) / self.yMax()
-                    path.addRect(CGRect(x: 1.0 + 30.0, y: height - self.settings.targetHigh * yScale + 1.0, width: width - 2.0, height: (self.settings.targetHigh - self.settings.targetLow) * yScale - 1.0))
+                    let yScale = (height - 20.0) / yMax()
+                    path.addRect(CGRect(x: 1.0 + 30.0, y: height - settings.targetHigh * yScale + 1.0, width: width - 2.0, height: (settings.targetHigh - settings.targetLow) * yScale - 1.0))
                 }.fill(Color.green).opacity(0.15)
             }
 
             // Target glucose low and high labels at the right
             GeometryReader { geometry in
                 ZStack {
-                    Text("\(Int(self.settings.targetHigh))")
-                        .position(x: CGFloat(Double(geometry.size.width) - 15.0), y: CGFloat(Double(geometry.size.height) - (Double(geometry.size.height) - 20.0) / self.yMax() * self.settings.targetHigh))
-                    Text("\(Int(self.settings.targetLow))")
-                        .position(x: CGFloat(Double(geometry.size.width) - 15.0), y: CGFloat(Double(geometry.size.height) - (Double(geometry.size.height) - 20.0) / self.yMax() * self.settings.targetLow))
+                    Text("\(Int(settings.targetHigh))")
+                        .position(x: CGFloat(Double(geometry.size.width) - 15.0), y: CGFloat(Double(geometry.size.height) - (Double(geometry.size.height) - 20.0) / yMax() * settings.targetHigh))
+                    Text("\(Int(settings.targetLow))")
+                        .position(x: CGFloat(Double(geometry.size.width) - 15.0), y: CGFloat(Double(geometry.size.height) - (Double(geometry.size.height) - 20.0) / yMax() * settings.targetLow))
                 }.font(.footnote).foregroundColor(.gray)
             }
 
             // Historic raw values
             GeometryReader { geometry in
-                let count = self.history.rawValues.count
+                let count = history.rawValues.count
                 if count > 0 {
                     Path() { path in
                         let width  = Double(geometry.size.width) - 60.0
                         let height = Double(geometry.size.height)
-                        let v = self.history.rawValues.map{$0.value}
-                        let yScale = (height - 20.0) / self.yMax()
+                        let v = history.rawValues.map{$0.value}
+                        let yScale = (height - 20.0) / yMax()
                         let xScale = width / Double(count - 1)
                         var startingVoid = v[count - 1] < 1 ? true : false
                         if startingVoid == false { path.move(to: .init(x: 0.0 + 30.0, y: height - Double(v[count - 1]) * yScale)) }
@@ -71,13 +71,13 @@ struct Graph: View {
 
             // Historic factory values
             GeometryReader { geometry in
-                let count = self.history.factoryValues.count
+                let count = history.factoryValues.count
                 if count > 0 {
                     Path() { path in
                         let width  = Double(geometry.size.width) - 60.0
                         let height = Double(geometry.size.height)
-                        let v = self.history.factoryValues.map{$0.value}
-                        let yScale = (height - 20.0) / self.yMax()
+                        let v = history.factoryValues.map{$0.value}
+                        let yScale = (height - 20.0) / yMax()
                         let xScale = width / Double(count - 1)
                         var startingVoid = v[count - 1] < 1 ? true : false
                         if startingVoid == false { path.move(to: .init(x: 0.0 + 30.0, y: height - Double(v[count - 1]) * yScale)) }
@@ -98,13 +98,13 @@ struct Graph: View {
 
             // Historic calibrated values
             GeometryReader { geometry in
-                let count = self.history.calibratedValues.count
+                let count = history.calibratedValues.count
                 if count > 0 {
                     Path() { path in
                         let width  = Double(geometry.size.width) - 60.0
                         let height = Double(geometry.size.height)
-                        let v = self.history.calibratedValues.map{$0.value}
-                        let yScale = (height - 20.0) / self.yMax()
+                        let v = history.calibratedValues.map{$0.value}
+                        let yScale = (height - 20.0) / yMax()
                         let xScale = width / Double(count - 1)
                         var startingVoid = v[count - 1] < 1 ? true : false
                         if startingVoid == false { path.move(to: .init(x: 0.0 + 30.0, y: height - Double(v[count - 1]) * yScale)) }
@@ -130,10 +130,10 @@ struct Graph: View {
                     let width  = Double(geometry.size.width) - 60.0
                     let height = Double(geometry.size.height)
                     path.addRoundedRect(in: CGRect(x: 0.0 + 30, y: 0.0, width: width, height: height), cornerSize: CGSize(width: 8, height: 8))
-                    let count = self.history.values.count
+                    let count = history.values.count
                     if count > 0 {
-                        let v = self.history.values.map{$0.value}
-                        let yScale = (height - 20.0) / self.yMax()
+                        let v = history.values.map{$0.value}
+                        let yScale = (height - 20.0) / yMax()
                         let xScale = width / Double(count - 1)
                         var startingVoid = v[count - 1] < 1 ? true : false
                         if startingVoid == false { path.move(to: .init(x: 0.0 + 30.0, y: height - Double(v[count - 1]) * yScale)) }

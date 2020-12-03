@@ -35,7 +35,7 @@ struct OnlineView: View {
 
                         VStack(spacing: 0) {
                             // TODO: reload web page
-                            Button(action: { self.app.main.rescan() }) {
+                            Button(action: { app.main.rescan() }) {
                                 Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).foregroundColor(.accentColor)
                             }
 
@@ -43,17 +43,17 @@ struct OnlineView: View {
                                     "\(readingCountdown) s" : "...")
                                 .fixedSize()
                                 .onReceive(timer) { _ in
-                                    self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
+                                    readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
                                 }.foregroundColor(.orange).font(Font.caption.monospacedDigit())
                         }
 
                         Button(action: {
-                            if self.app.main.nfcReader.isNFCAvailable {
-                                self.app.main.nfcReader.startSession()
-                                if let healthKit = self.app.main.healthKit { healthKit.read() }
-                                if let nightscout = self.app.main.nightscout { nightscout.read() }
+                            if app.main.nfcReader.isNFCAvailable {
+                                app.main.nfcReader.startSession()
+                                if let healthKit = app.main.healthKit { healthKit.read() }
+                                if let nightscout = app.main.nightscout { nightscout.read() }
                             } else {
-                                self.showingNFCAlert = true
+                                showingNFCAlert = true
                             }
                         }) {
                             Image("NFC").renderingMode(.template).resizable().frame(width: 39, height: 27).padding(.bottom, 12)
@@ -71,11 +71,11 @@ struct OnlineView: View {
                         .frame(height: UIScreen.main.bounds.size.height * 0.60)
                         .alert(isPresented: $app.showingJavaScriptConfirmAlert) {
                             Alert(title: Text("JavaScript"),
-                                  message: Text(self.app.JavaScriptConfirmAlertMessage),
+                                  message: Text(app.JavaScriptConfirmAlertMessage),
                                   primaryButton: .default(Text("OK")) {
-                                    self.app.main.log("JavaScript alert: selected OK") },
+                                    app.main.log("JavaScript alert: selected OK") },
                                   secondaryButton: .cancel(Text("Cancel")) {
-                                    self.app.main.log("JavaScript alert: selected Cancel") }
+                                    app.main.log("JavaScript alert: selected Cancel") }
                             )
                         }
 
@@ -86,7 +86,7 @@ struct OnlineView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .topLeading)
                     }.font(.system(.caption, design: .monospaced)).foregroundColor(Color(UIColor.cyan))
-                    .onAppear { if let nightscout = self.app.main?.nightscout { nightscout.read() } }
+                    .onAppear { if let nightscout = app.main?.nightscout { nightscout.read() } }
                 }
             }
             .navigationBarTitleDisplayMode(.inline)

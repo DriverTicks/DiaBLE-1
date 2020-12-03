@@ -54,7 +54,7 @@ struct Monitor: View {
                                 "\(readingCountdown) s" : "")
                             .fixedSize()
                             .onReceive(timer) { _ in
-                                self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
+                                readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
                             }
                             .font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
                     }
@@ -118,7 +118,7 @@ struct Monitor: View {
 
                 Spacer()
 
-                Button(action: { self.app.main.rescan() }) {
+                Button(action: { app.main.rescan() }) {
                     Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 16, height: 16).foregroundColor(.blue)
                 }
                 .frame(height: 16)
@@ -126,9 +126,9 @@ struct Monitor: View {
                 if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
                     Spacer()
                     Button(action: {
-                        self.app.main.centralManager.stopScan()
-                        self.app.main.status("Stopped scanning")
-                        self.app.main.log("Bluetooth: stopped scanning")
+                        app.main.centralManager.stopScan()
+                        app.main.status("Stopped scanning")
+                        app.main.log("Bluetooth: stopped scanning")
                     }) { Image(systemName: "stop.circle").resizable().frame(width: 16, height: 16).foregroundColor(.red) }
                     .frame(height: 16)
                 }

@@ -60,7 +60,7 @@ struct Monitor: View {
                                     "\(readingCountdown) s" : "")
                                 .fixedSize()
                                 .onReceive(timer) { _ in
-                                    self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
+                                    readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
                                 }.font(Font.callout.monospacedDigit()).foregroundColor(.orange)
                         }
                     }
@@ -150,15 +150,15 @@ struct Monitor: View {
                                                 Text("Slope slope:")
                                                 TextField("Slope slope", value: $app.calibration.slopeSlope, formatter: settings.numberFormatter,
                                                           onEditingChanged: { changed in
-                                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                                            app.main.applyCalibration(sensor: app.sensor)
                                                           }).foregroundColor(.purple)
                                                     .onTapGesture {
                                                         withAnimation {
-                                                            self.editingCalibration = true
+                                                            editingCalibration = true
                                                         }
                                                     }
                                             }
-                                            if self.editingCalibration {
+                                            if editingCalibration {
                                                 Slider(value: $app.calibration.slopeSlope, in: 0.00001 ... 0.00002, step: 0.00000005)
                                             }
                                         }
@@ -168,15 +168,15 @@ struct Monitor: View {
                                                 Text("Slope offset:")
                                                 TextField("Slope offset", value: $app.calibration.offsetSlope, formatter: settings.numberFormatter,
                                                           onEditingChanged: { changed in
-                                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                                            app.main.applyCalibration(sensor: app.sensor)
                                                           }).foregroundColor(.purple)
                                                     .onTapGesture {
                                                         withAnimation {
-                                                            self.editingCalibration = true
+                                                            editingCalibration = true
                                                         }
                                                     }
                                             }
-                                            if self.editingCalibration {
+                                            if editingCalibration {
                                                 Slider(value: $app.calibration.offsetSlope, in: -0.02 ... 0.02, step: 0.0001)
                                             }
                                         }
@@ -188,15 +188,15 @@ struct Monitor: View {
                                                 Text("Offset slope:")
                                                 TextField("Offset slope", value: $app.calibration.slopeOffset, formatter: settings.numberFormatter,
                                                           onEditingChanged: { changed in
-                                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                                            app.main.applyCalibration(sensor: app.sensor)
                                                           }).foregroundColor(.purple)
                                                     .onTapGesture {
                                                         withAnimation {
-                                                            self.editingCalibration = true
+                                                            editingCalibration = true
                                                         }
                                                     }
                                             }
-                                            if self.editingCalibration {
+                                            if editingCalibration {
                                                 Slider(value: $app.calibration.slopeOffset, in: -0.01 ... 0.01, step: 0.00005)
                                             }
                                         }
@@ -206,15 +206,15 @@ struct Monitor: View {
                                                 Text("Offset offset:")
                                                 TextField("Offset offset", value: $app.calibration.offsetOffset, formatter: settings.numberFormatter,
                                                           onEditingChanged: { changed in
-                                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                                            app.main.applyCalibration(sensor: app.sensor)
                                                           }).foregroundColor(.purple)
                                                     .onTapGesture {
                                                         withAnimation {
-                                                            self.editingCalibration = true
+                                                            editingCalibration = true
                                                         }
                                                     }
                                             }
-                                            if self.editingCalibration {
+                                            if editingCalibration {
                                                 Slider(value: $app.calibration.offsetOffset, in: -100 ... 100, step: 0.5)
                                             }
                                         }
@@ -228,31 +228,31 @@ struct Monitor: View {
                                 Spacer()
                                 HStack(spacing: 20) {
 
-                                    if self.editingCalibration {
+                                    if editingCalibration {
                                         Button(action: {
                                             withAnimation {
-                                                self.editingCalibration = false
+                                                editingCalibration = false
                                             }
-                                            self.settings.calibration = Calibration()
+                                            settings.calibration = Calibration()
                                         }
                                         ) { Text("Use").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
 
                                         Button(action: {
                                             withAnimation {
-                                                self.editingCalibration = false
+                                                editingCalibration = false
                                             }
-                                            self.settings.calibration = self.app.calibration
+                                            settings.calibration = app.calibration
                                         }
                                         ) { Text("Save").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
                                     }
 
-                                    if self.settings.calibration != Calibration() {
+                                    if settings.calibration != Calibration() {
                                         Button(action: {
                                             withAnimation {
-                                                self.editingCalibration = false
+                                                editingCalibration = false
                                             }
-                                            self.app.calibration = self.settings.calibration
-                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                            app.calibration = settings.calibration
+                                            app.main.applyCalibration(sensor: app.sensor)
                                         }
                                         ) { Text("Load").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
                                     }
@@ -260,11 +260,11 @@ struct Monitor: View {
                                     if app.calibration != settings.oopCalibration {
                                         Button(action: {
                                             withAnimation {
-                                                self.editingCalibration = false
+                                                editingCalibration = false
                                             }
-                                            self.app.calibration = self.settings.oopCalibration
-                                            self.settings.calibration = Calibration()
-                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                            app.calibration = settings.oopCalibration
+                                            settings.calibration = Calibration()
+                                            app.main.applyCalibration(sensor: app.sensor)
                                         }
                                         ) { Text("Restore OOP").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
                                     }
@@ -283,15 +283,15 @@ struct Monitor: View {
 
                 HStack {
 
-                    Button(action: { self.app.main.rescan() }) {
+                    Button(action: { app.main.rescan() }) {
                         Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).padding(.bottom, 8).foregroundColor(.accentColor)
                     }
 
                     if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
                         Button(action: {
-                            self.app.main.centralManager.stopScan()
-                            self.app.main.status("Stopped scanning")
-                            self.app.main.log("Bluetooth: stopped scanning")
+                            app.main.centralManager.stopScan()
+                            app.main.status("Stopped scanning")
+                            app.main.log("Bluetooth: stopped scanning")
                         }) { Image(systemName: "stop.circle").resizable().frame(width: 32, height: 32)
                         }.padding(.bottom, 8).foregroundColor(.red)
                     }
@@ -305,10 +305,10 @@ struct Monitor: View {
             .navigationBarItems(
                 trailing:
                     Button(action: {
-                        if self.app.main.nfcReader.isNFCAvailable {
-                            self.app.main.nfcReader.startSession()
+                        if app.main.nfcReader.isNFCAvailable {
+                            app.main.nfcReader.startSession()
                         } else {
-                            self.showingNFCAlert = true
+                            showingNFCAlert = true
                         }
                     }) {
                         Image("NFC").renderingMode(.template).resizable().frame(width: 39, height: 27).padding(4)

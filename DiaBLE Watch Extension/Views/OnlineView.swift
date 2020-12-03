@@ -23,14 +23,14 @@ struct OnlineView: View {
 
                     VStack(spacing: 0) {
 
-                        Button(action: { self.app.main.rescan() }) {
+                        Button(action: { app.main.rescan() }) {
                             Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 16, height: 16)
                                 .foregroundColor(.blue)
                             Text(app.deviceState == "Connected" && (readingCountdown > 0 || app.status.hasSuffix("sensor")) ?
                                     "\(readingCountdown) s" : "...")
                                 .fixedSize()
                                 .onReceive(timer) { _ in
-                                    self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
+                                    readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
                                 }.foregroundColor(.orange).font(Font.footnote.monospacedDigit())
                         }
                     }
@@ -45,11 +45,11 @@ struct OnlineView: View {
                 //                    .frame(height: UIScreen.main.bounds.size.height * 0.60)
                 //                    .alert(isPresented: $app.showingJavaScriptConfirmAlert) {
                 //                        Alert(title: Text("JavaScript"),
-                //                              message: Text(self.app.JavaScriptConfirmAlertMessage),
+                //                              message: Text(app.JavaScriptConfirmAlertMessage),
                 //                              primaryButton: .default(Text("OK")) {
-                //                                self.app.main.log("JavaScript alert: selected OK") },
+                //                                app.main.log("JavaScript alert: selected OK") },
                 //                              secondaryButton: .cancel(Text("Cancel")) {
-                //                                self.app.main.log("JavaScript alert: selected Cancel") }
+                //                                app.main.log("JavaScript alert: selected Cancel") }
                 //                        )
                 //                }
 
@@ -64,8 +64,8 @@ struct OnlineView: View {
             }
             // .font(.system(.footnote, design: .monospaced))
             .foregroundColor(Color(UIColor.cyan))
-            .onAppear { if let nightscout = self.app.main?.nightscout { nightscout.read()
-                self.app.main.log("nightscoutValues count \(self.history.nightscoutValues.count)")
+            .onAppear { if let nightscout = app.main?.nightscout { nightscout.read()
+                app.main.log("nightscoutValues count \(history.nightscoutValues.count)")
 
             } }
         }

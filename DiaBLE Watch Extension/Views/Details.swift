@@ -213,7 +213,7 @@ struct Details: View {
 
                 Spacer()
 
-                Button(action: { self.app.main.rescan() }) {
+                Button(action: { app.main.rescan() }) {
                     HStack {
                         Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 24, height: 24)
                             .foregroundColor(.blue)
@@ -221,7 +221,7 @@ struct Details: View {
                                 "\(readingCountdown) s" : "...")
                             .fixedSize()
                             .onReceive(timer) { _ in
-                                self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
+                                readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
                             }.foregroundColor(.orange).font(Font.footnote.monospacedDigit())
                     }
                 }
@@ -229,9 +229,9 @@ struct Details: View {
                 Spacer()
 
                 Button(action: {
-                    let centralManager = self.app.main.centralManager
-                    if self.app.device != nil {
-                        centralManager.cancelPeripheralConnection(self.app.device.peripheral!)
+                    let centralManager = app.main.centralManager
+                    if app.device != nil {
+                        centralManager.cancelPeripheralConnection(app.device.peripheral!)
                     }
                 }
                 ) {

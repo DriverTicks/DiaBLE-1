@@ -61,8 +61,8 @@ struct SettingsView: View {
                     NavigationLink(destination: Monitor().environmentObject(app).environmentObject(history).environmentObject(settings)) {
                         Image(systemName: "timer").resizable().frame(width: 20, height: 20)
                     }.simultaneousGesture(TapGesture().onEnded {
-                        // self.app.selectedTab = (self.settings.preferredTransmitter != .none) ? .monitor : .log
-                        self.app.main.rescan()
+                        // app.selectedTab = (settings.preferredTransmitter != .none) ? .monitor : .log
+                        app.main.rescan()
                     })
 
                     Picker(selection: $settings.readingInterval, label: Text("")) {
@@ -79,7 +79,7 @@ struct SettingsView: View {
                 Spacer()
 
                 Button(action: {
-                    self.settings.mutedAudio.toggle()
+                    settings.mutedAudio.toggle()
                 }) {
                     Image(systemName: settings.mutedAudio ? "speaker.slash.fill" : "speaker.2.fill").resizable().frame(width: 20, height: 20).foregroundColor(.blue)
                 }
@@ -87,18 +87,18 @@ struct SettingsView: View {
                 Spacer()
 
                 Button(action: {
-                    self.settings.disabledNotifications.toggle()
-                    if self.settings.disabledNotifications {
+                    settings.disabledNotifications.toggle()
+                    if settings.disabledNotifications {
                         // UIApplication.shared.applicationIconBadgeNumber = 0
                     } else {
-                        // UIApplication.shared.applicationIconBadgeNumber = self.app.currentGlucose
+                        // UIApplication.shared.applicationIconBadgeNumber = app.currentGlucose
                     }
                 }) {
                     Image(systemName: settings.disabledNotifications ? "zzz" : "app.badge.fill").resizable().frame(width: 20, height: 20).foregroundColor(.blue)
                 }
 
                 //                    Button(action: {
-                //                        self.showingCalendarPicker = true
+                //                        showingCalendarPicker = true
                 //                    }) {
                 //                        Image(systemName: settings.calendarTitle != "" ? "calendar.circle.fill" : "calendar.circle").resizable().frame(width: 32, height: 32).foregroundColor(.accentColor)
                 //                    }
@@ -106,16 +106,16 @@ struct SettingsView: View {
                 //                        VStack {
                 //                            Section {
                 //                                Button(action: {
-                //                                    self.settings.calendarTitle = ""
-                //                                    self.showingCalendarPicker = false
-                //                                    self.app.main.eventKit?.sync()
+                //                                    settings.calendarTitle = ""
+                //                                    showingCalendarPicker = false
+                //                                    app.main.eventKit?.sync()
                 //                                }
                 //                                ) { Text("None").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
-                //                                    .disabled(self.settings.calendarTitle == "")
+                //                                    .disabled(settings.calendarTitle == "")
                 //                            }
                 //                            Section {
-                //                                Picker(selection: self.$settings.calendarTitle, label: Text("Calendar")) {
-                //                                    ForEach([""] + (self.app.main.eventKit?.calendarTitles ?? [""]), id: \.self) { title in
+                //                                Picker(selection: $settings.calendarTitle, label: Text("Calendar")) {
+                //                                    ForEach([""] + (app.main.eventKit?.calendarTitles ?? [""]), id: \.self) { title in
                 //                                        Text(title != "" ? title : "None")
                 //                                    }
                 //                                }
@@ -123,16 +123,16 @@ struct SettingsView: View {
                 //                            Section {
                 //                                HStack {
                 //                                    Image(systemName: "bell.fill").foregroundColor(.red).padding(8)
-                //                                    Toggle("High / Low", isOn: self.$settings.calendarAlarmIsOn)
-                //                                        .disabled(self.settings.calendarTitle == "")
+                //                                    Toggle("High / Low", isOn: $settings.calendarAlarmIsOn)
+                //                                        .disabled(settings.calendarTitle == "")
                 //                                }
                 //                            }
                 //                            Section {
                 //                                Button(action: {
-                //                                    self.showingCalendarPicker = false
-                //                                    self.app.main.eventKit?.sync()
+                //                                    showingCalendarPicker = false
+                //                                    app.main.eventKit?.sync()
                 //                                }
-                //                                ) { Text(self.settings.calendarTitle == "" ? "Don't remind" : "Remind").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)).animation(.default) }
+                //                                ) { Text(settings.calendarTitle == "" ? "Don't remind" : "Remind").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)).animation(.default) }
                 //
                 //                            }.padding(.top, 40)
                 //                        }.padding(60)

@@ -27,10 +27,10 @@ struct LogView: View {
                     VStack(spacing: 0) {
 
                         Button(action: {
-                            if self.app.main.nfcReader.isNFCAvailable {
-                                self.app.main.nfcReader.startSession()
+                            if app.main.nfcReader.isNFCAvailable {
+                                app.main.nfcReader.startSession()
                             } else {
-                                self.showingNFCAlert = true
+                                showingNFCAlert = true
                             }
                         }) {
                             Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18).padding(EdgeInsets(top: 10, leading: 6, bottom: 14, trailing: 0))
@@ -40,7 +40,7 @@ struct LogView: View {
                                 message: Text("This device doesn't allow scanning the Libre."))
                         }
 
-                        Button(action: { self.app.main.rescan() }) {
+                        Button(action: { app.main.rescan() }) {
                             VStack {
                                 Image("Bluetooth").renderingMode(.template).resizable().frame(width: 32, height: 32)
                                 Text("Scan")
@@ -54,16 +54,16 @@ struct LogView: View {
                                 "\(readingCountdown) s" : "")
                             .fixedSize()
                             .onReceive(timer) { _ in
-                                self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
+                                readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
                             }.font(Font.caption.monospacedDigit()).foregroundColor(.orange)
                     }
 
                     // Same as in Monitor
                     if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
                         Button(action: {
-                            self.app.main.centralManager.stopScan()
-                            self.app.main.status("Stopped scanning")
-                            self.app.main.log("Bluetooth: stopped scanning")
+                            app.main.centralManager.stopScan()
+                            app.main.status("Stopped scanning")
+                            app.main.log("Bluetooth: stopped scanning")
                         }) { Image(systemName: "stop.circle").resizable().frame(width: 32, height: 32)
                         }.foregroundColor(.blue)
                     }
@@ -71,7 +71,7 @@ struct LogView: View {
                     Spacer()
 
                     Button(action: {
-                        self.settings.debugLevel = 1 - self.settings.debugLevel
+                        settings.debugLevel = 1 - settings.debugLevel
                     }) { VStack {
                         Image(systemName: "wrench.fill").resizable().frame(width: 24, height: 24)
                         Text(settings.debugLevel == 1 ? "Devel" : "Basic").font(.caption).offset(y: -6)
@@ -80,14 +80,14 @@ struct LogView: View {
                     .foregroundColor(settings.debugLevel == 1 ? .black : .accentColor)
                     .padding(.bottom, 6)
 
-                    Button(action: { UIPasteboard.general.string = self.log.text }) {
+                    Button(action: { UIPasteboard.general.string = log.text }) {
                         VStack {
                             Image(systemName: "doc.on.doc").resizable().frame(width: 24, height: 24)
                             Text("Copy").offset(y: -6)
                         }
                     }
 
-                    Button(action: { self.log.text = "Log cleared \(Date().local)\n" }) {
+                    Button(action: { log.text = "Log cleared \(Date().local)\n" }) {
                         VStack {
                             Image(systemName: "clear").resizable().frame(width: 24, height: 24)
                             Text("Clear").offset(y: -6)
@@ -95,9 +95,9 @@ struct LogView: View {
                     }
 
                     Button(action: {
-                        self.settings.reversedLog.toggle()
-                        self.log.text = self.log.text.split(separator:"\n").reversed().joined(separator: "\n")
-                        if !self.settings.reversedLog { self.log.text.append(" \n") }
+                        settings.reversedLog.toggle()
+                        log.text = log.text.split(separator:"\n").reversed().joined(separator: "\n")
+                        if !settings.reversedLog { log.text.append(" \n") }
                     }) { VStack {
                         Image(systemName: "backward.fill").resizable().frame(width: 12, height: 12).offset(y: 5)
                         Text(" REV ").offset(y: -2)
@@ -109,8 +109,8 @@ struct LogView: View {
 
 
                     Button(action: {
-                        self.settings.logging.toggle()
-                        self.app.main.log("\(self.settings.logging ? "Log started" : "Log stopped") \(Date().local)")
+                        settings.logging.toggle()
+                        app.main.log("\(settings.logging ? "Log started" : "Log stopped") \(Date().local)")
                     }) { VStack {
                         Image(systemName: settings.logging ? "stop.circle" : "play.circle").resizable().frame(width: 32, height: 32)
                     }

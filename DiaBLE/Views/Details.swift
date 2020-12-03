@@ -222,7 +222,7 @@ struct Details: View {
             VStack(spacing: 0) {
 
                 // FIXME: updates only every 3-4 seconds
-                Button(action: { self.app.main.rescan() }) {
+                Button(action: { app.main.rescan() }) {
                     Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).foregroundColor(.accentColor)
                 }
 
@@ -230,7 +230,7 @@ struct Details: View {
                         "\(readingCountdown) s" : "...")
                     .fixedSize()
                     .onReceive(timer) { _ in
-                        self.readingCountdown = self.settings.readingInterval * 60 - Int(Date().timeIntervalSince(self.app.lastReadingDate))
+                        readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
                     }.foregroundColor(.orange).font(Font.caption.monospacedDigit())
             }.padding(.bottom, 8)
 
