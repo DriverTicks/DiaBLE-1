@@ -27,7 +27,7 @@ class HealthKit {
                 handler(false)
                 return
         }
-        store?.requestAuthorization(toShare: [glucoseQuantity, insulingDelivery], read: [glucoseQuantity, insulingDelivery], completion: {(success, error) in
+        store?.requestAuthorization(toShare: [glucoseQuantity, insulingDelivery], read: [glucoseQuantity, insulingDelivery], completion: { success, error in
             handler(success)
         })
     }
@@ -44,7 +44,7 @@ class HealthKit {
             handler(false)
             return
         }
-        store?.getRequestStatusForAuthorization(toShare: [glucoseType, insulingDelivery], read: [glucoseType, insulingDelivery]) { (status, err) in
+        store?.getRequestStatusForAuthorization(toShare: [glucoseType, insulingDelivery], read: [glucoseType, insulingDelivery]) { status, err in
             if let _ = err {
                 handler(false)
             } else {
@@ -65,12 +65,10 @@ class HealthKit {
                              end: $0.date,
                              metadata: nil)
         }
-        store?.save(samples) { (success, error) in
+        store?.save(samples) { success, error in
             if let error = error {
                 self.main.log("HealthKit: error while saving: \(error.localizedDescription)")
             }
-            // FIXME: double entries
-            self.main.log("HealthKit samples count \(samples.count), \(samples)")
             self.lastDate = samples.last?.endDate
         }
     }
@@ -84,7 +82,7 @@ class HealthKit {
         }
 
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
-        let query = HKSampleQuery(sampleType: glucoseType, predicate: nil, limit: 12 * 8, sortDescriptors: [sortDescriptor]) { (query, results, error) in
+        let query = HKSampleQuery(sampleType: glucoseType, predicate: nil, limit: 12 * 8, sortDescriptors: [sortDescriptor]) { query, results, error in
             guard let results = results as? [HKQuantitySample] else {
                 if let error = error {
                     self.main.log("HealthKit error: \(error.localizedDescription)")

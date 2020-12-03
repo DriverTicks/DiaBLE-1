@@ -117,175 +117,164 @@ struct Monitor: View {
 
                 }
 
-                Toggle(isOn: $settings.calibrating.animation()) {
-                    Text("Calibration")
-                }
-                .toggleStyle(SwitchToggleStyle(tint: Color.purple))
-                .onChange(of: settings.calibrating) { calibrating in
+                VStack(spacing: 0) {
 
-                    if !calibrating {
-                        withAnimation {
-                            editingCalibration = false
-                        }
-
-                    } else {
-
-                        // TODO
-
+                    Toggle(isOn: $settings.calibrating.animation()) {
+                        Text("Calibration")
                     }
-                }
+                    .toggleStyle(SwitchToggleStyle(tint: Color.purple))
+                    .onChange(of: settings.calibrating) { calibrating in
 
-                if settings.calibrating {
+                        if !calibrating {
+                            withAnimation {
+                                editingCalibration = false
+                            }
 
-                    DisclosureGroup(isExpanded: $showingCalibrationParameters) {
+                        } else {
 
-                        if history.calibratedValues.count > 0 {
-                            VStack(spacing: 6) {
-                                HStack {
-                                    VStack(spacing: 0) {
-                                        HStack {
-                                            Text("Slope slope:")
-                                            TextField("Slope slope", value: $app.calibration.slopeSlope, formatter: settings.numberFormatter,
-                                                      onEditingChanged: { changed in
-                                                        self.app.main.applyCalibration(sensor: self.app.sensor)
-                                                      }).foregroundColor(.purple)
-                                                .onTapGesture {
-                                                    withAnimation {
-                                                        self.editingCalibration = true
-                                                    }
-                                                }
-                                        }
-                                        if self.editingCalibration {
-                                            Slider(value: $app.calibration.slopeSlope, in: 0.00001 ... 0.00002, step: 0.00000005)
-                                                .accentColor(.purple)
-                                        }
-                                    }
+                            // TODO
 
-                                    VStack(spacing: 0) {
-                                        HStack {
-                                            Text("Slope offset:")
-                                            TextField("Slope offset", value: $app.calibration.offsetSlope, formatter: settings.numberFormatter,
-                                                      onEditingChanged: { changed in
-                                                        self.app.main.applyCalibration(sensor: self.app.sensor)
-                                                      }).foregroundColor(.purple)
-                                                .onTapGesture {
-                                                    withAnimation {
-                                                        self.editingCalibration = true
-                                                    }
-                                                }
-                                        }
-                                        if self.editingCalibration {
-                                            Slider(value: $app.calibration.offsetSlope, in: -0.02 ... 0.02, step: 0.0001)
-                                                .accentColor(.purple)
-                                        }
-                                    }
-                                }
-
-                                HStack {
-                                    VStack(spacing: 0) {
-                                        HStack {
-                                            Text("Offset slope:")
-                                            TextField("Offset slope", value: $app.calibration.slopeOffset, formatter: settings.numberFormatter,
-                                                      onEditingChanged: { changed in
-                                                        self.app.main.applyCalibration(sensor: self.app.sensor)
-                                                      }).foregroundColor(.purple)
-                                                .onTapGesture {
-                                                    withAnimation {
-                                                        self.editingCalibration = true
-                                                    }
-                                                }
-                                        }
-                                        if self.editingCalibration {
-                                            Slider(value: $app.calibration.slopeOffset, in: -0.01 ... 0.01, step: 0.00005)
-                                                .accentColor(.purple)
-                                        }
-                                    }
-
-                                    VStack(spacing: 0) {
-                                        HStack {
-                                            Text("Offset offset:")
-                                            TextField("Offset offset", value: $app.calibration.offsetOffset, formatter: settings.numberFormatter,
-                                                      onEditingChanged: { changed in
-                                                        self.app.main.applyCalibration(sensor: self.app.sensor)
-                                                      }).foregroundColor(.purple)
-                                                .onTapGesture {
-                                                    withAnimation {
-                                                        self.editingCalibration = true
-                                                    }
-                                                }
-                                        }
-                                        if self.editingCalibration {
-                                            Slider(value: $app.calibration.offsetOffset, in: -100 ... 100, step: 0.5)
-                                                .accentColor(.purple)
-                                        }
-                                    }
-                                }
-                            }.font(.footnote)
-                            .keyboardType(.numbersAndPunctuation)
                         }
+                        app.main.applyCalibration(sensor: app.sensor)
+                    }
 
+                    if settings.calibrating {
 
-                        if app.sensor != nil && (self.editingCalibration || history.calibratedValues.count == 0) {
-                            Spacer()
-                            HStack(spacing: 20) {
-                                if self.editingCalibration {
-                                    Button(action: {
-                                        withAnimation {
-                                            self.editingCalibration = false
+                        DisclosureGroup(isExpanded: $showingCalibrationParameters) {
+
+                            if history.calibratedValues.count > 0 {
+                                VStack(spacing: 6) {
+                                    HStack {
+                                        VStack(spacing: 0) {
+                                            HStack {
+                                                Text("Slope slope:")
+                                                TextField("Slope slope", value: $app.calibration.slopeSlope, formatter: settings.numberFormatter,
+                                                          onEditingChanged: { changed in
+                                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                                          }).foregroundColor(.purple)
+                                                    .onTapGesture {
+                                                        withAnimation {
+                                                            self.editingCalibration = true
+                                                        }
+                                                    }
+                                            }
+                                            if self.editingCalibration {
+                                                Slider(value: $app.calibration.slopeSlope, in: 0.00001 ... 0.00002, step: 0.00000005)
+                                            }
                                         }
-                                        self.settings.calibration = Calibration()
-                                    }
-                                    ) { Text("Use").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
 
-                                    Button(action: {
-                                        withAnimation {
-                                            self.editingCalibration = false
-                                        }
-                                        self.settings.calibration = self.app.calibration
-                                    }
-                                    ) { Text("Save").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
-                                }
-
-                                if self.settings.calibration != Calibration() {
-                                    Button(action: {
-                                        withAnimation {
-                                            self.editingCalibration = false
-                                        }
-                                        self.app.calibration = self.settings.calibration
-                                        if self.app.currentGlucose < 0 {
-                                            self.app.main.applyCalibration(sensor: self.app.sensor)
-                                            if self.history.calibratedTrend.count > 0 {
-                                                self.app.currentGlucose = -self.history.calibratedTrend[0].value
+                                        VStack(spacing: 0) {
+                                            HStack {
+                                                Text("Slope offset:")
+                                                TextField("Slope offset", value: $app.calibration.offsetSlope, formatter: settings.numberFormatter,
+                                                          onEditingChanged: { changed in
+                                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                                          }).foregroundColor(.purple)
+                                                    .onTapGesture {
+                                                        withAnimation {
+                                                            self.editingCalibration = true
+                                                        }
+                                                    }
+                                            }
+                                            if self.editingCalibration {
+                                                Slider(value: $app.calibration.offsetSlope, in: -0.02 ... 0.02, step: 0.0001)
                                             }
                                         }
                                     }
-                                    ) { Text("Load").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
-                                }
 
-                                Button(action: {
-                                    withAnimation {
-                                        self.editingCalibration = false
-                                    }
-                                    self.app.calibration = self.settings.oopCalibration
-                                    self.settings.calibration = Calibration()
-                                    if self.app.currentGlucose < 0 {
-                                        self.app.main.applyCalibration(sensor: self.app.sensor)
-                                        if self.history.calibratedTrend.count > 0 {
-                                            self.app.currentGlucose = -self.history.calibratedTrend[0].value
+                                    HStack {
+                                        VStack(spacing: 0) {
+                                            HStack {
+                                                Text("Offset slope:")
+                                                TextField("Offset slope", value: $app.calibration.slopeOffset, formatter: settings.numberFormatter,
+                                                          onEditingChanged: { changed in
+                                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                                          }).foregroundColor(.purple)
+                                                    .onTapGesture {
+                                                        withAnimation {
+                                                            self.editingCalibration = true
+                                                        }
+                                                    }
+                                            }
+                                            if self.editingCalibration {
+                                                Slider(value: $app.calibration.slopeOffset, in: -0.01 ... 0.01, step: 0.00005)
+                                            }
+                                        }
+
+                                        VStack(spacing: 0) {
+                                            HStack {
+                                                Text("Offset offset:")
+                                                TextField("Offset offset", value: $app.calibration.offsetOffset, formatter: settings.numberFormatter,
+                                                          onEditingChanged: { changed in
+                                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                                          }).foregroundColor(.purple)
+                                                    .onTapGesture {
+                                                        withAnimation {
+                                                            self.editingCalibration = true
+                                                        }
+                                                    }
+                                            }
+                                            if self.editingCalibration {
+                                                Slider(value: $app.calibration.offsetOffset, in: -100 ... 100, step: 0.5)
+                                            }
                                         }
                                     }
-                                }
-                                ) { Text("Restore OOP").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
+                                }.font(.footnote)
+                                .keyboardType(.numbersAndPunctuation)
+                            }
 
-                            }.font(.footnote).accentColor(.purple)
+
+                            if app.sensor != nil && (self.editingCalibration || history.calibratedValues.count == 0) {
+                                Spacer()
+                                HStack(spacing: 20) {
+                                    if self.editingCalibration {
+                                        Button(action: {
+                                            withAnimation {
+                                                self.editingCalibration = false
+                                            }
+                                            self.settings.calibration = Calibration()
+                                        }
+                                        ) { Text("Use").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
+
+                                        Button(action: {
+                                            withAnimation {
+                                                self.editingCalibration = false
+                                            }
+                                            self.settings.calibration = self.app.calibration
+                                        }
+                                        ) { Text("Save").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
+                                    }
+
+                                    if self.settings.calibration != Calibration() {
+                                        Button(action: {
+                                            withAnimation {
+                                                self.editingCalibration = false
+                                            }
+                                            self.app.calibration = self.settings.calibration
+                                            self.app.main.applyCalibration(sensor: self.app.sensor)
+                                        }
+                                        ) { Text("Load").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
+                                    }
+
+                                    Button(action: {
+                                        withAnimation {
+                                            self.editingCalibration = false
+                                        }
+                                        self.app.calibration = self.settings.oopCalibration
+                                        self.settings.calibration = Calibration()
+                                        self.app.main.applyCalibration(sensor: self.app.sensor)
+                                    }
+                                    ) { Text("Restore OOP").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)) }
+
+                                }.font(.footnote)
+                            }
                         }
-                    }
-                    label: {
-                        Button("Parameters", action: { withAnimation { showingCalibrationParameters.toggle() } }) .foregroundColor(.purple)
-                    }
-                    .accentColor(.purple)
+                        label: {
+                            Button("Parameters", action: { withAnimation { showingCalibrationParameters.toggle() } }) .foregroundColor(.purple)
+                        }
 
-                }
+                    }
+                }.accentColor(.purple)
 
                 Spacer()
 

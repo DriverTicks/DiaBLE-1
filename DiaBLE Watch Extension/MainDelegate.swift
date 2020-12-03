@@ -350,24 +350,37 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
     }
 
 
-    func applyCalibration(sensor: Sensor) {
-        if self.app.calibration.offsetOffset != 0.0 && sensor.history.count > 0 {
+    func applyCalibration(sensor: Sensor?) {
 
-            var calibratedTrend = sensor.trend
-            for i in 0 ..< calibratedTrend.count {
-                calibratedTrend[i].calibration = self.app.calibration
+        if let sensor = sensor, settings.calibrating {
+
+            if sensor.history.count > 0 {
+
+                var calibratedTrend = sensor.trend
+                for i in 0 ..< calibratedTrend.count {
+                    calibratedTrend[i].calibration = self.app.calibration
+                }
+
+                var calibratedHistory = sensor.history
+                for i in 0 ..< calibratedHistory.count {
+                    calibratedHistory[i].calibration = self.app.calibration
+                }
+
+                self.history.calibratedTrend = calibratedTrend
+                self.history.calibratedValues = calibratedHistory
+                if calibratedTrend.count > 0 {
+                    sensor.currentGlucose = -calibratedTrend[0].value
+                    self.app.currentGlucose = sensor.currentGlucose
+                }
             }
 
-            var calibratedHistory = sensor.history
-            for i in 0 ..< calibratedHistory.count {
-                calibratedHistory[i].calibration = self.app.calibration
-            }
-
-            self.history.calibratedTrend = calibratedTrend
-            self.history.calibratedValues = calibratedHistory
-            sensor.currentGlucose = -self.history.calibratedTrend[0].value
+        } else {
+            self.history.calibratedTrend = []
+            self.history.calibratedValues = []
         }
+
     }
+
 
     /// currentGlucose is negative when set to the last trend raw value (no online connection)
     func didParseSensor(_ sensor: Sensor) {
@@ -384,7 +397,7 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
         currentGlucose = abs(currentGlucose)
 
         if currentGlucose > 0 && (currentGlucose > Int(settings.alarmHigh) || currentGlucose < Int(settings.alarmLow)) {
-            log("ALARM: current glucose: \(currentGlucose) (settings: high: \(Int(settings.alarmHigh)), low: \(Int(settings.alarmLow)), muted: \(settings.mutedAudio ? "yes" : "no")")
+            log("ALARM: current glucose: \(currentGlucose) (settings: high: \(Int(settings.alarmHigh)), low: \(Int(settings.alarmLow)), muted: \(settings.mutedAudio ? "yes" : "no"))")
             playAlarm()
             //            if (settings.calendarTitle == "" || !settings.calendarAlarmIsOn) && !settings.disabledNotifications { // TODO: notifications settings
             //                title += "  \(settings.glucoseUnit)"

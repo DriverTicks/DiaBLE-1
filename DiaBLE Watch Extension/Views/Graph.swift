@@ -44,11 +44,11 @@ struct Graph: View {
 
             // Historic raw values
             GeometryReader { geometry in
-                Path() { path in
-                    let width  = Double(geometry.size.width) - 60.0
-                    let height = Double(geometry.size.height)
-                    let count = self.history.rawValues.count
-                    if count > 0 {
+                let count = self.history.rawValues.count
+                if count > 0 {
+                    Path() { path in
+                        let width  = Double(geometry.size.width) - 60.0
+                        let height = Double(geometry.size.height)
                         let v = self.history.rawValues.map{$0.value}
                         let yScale = (height - 20.0) / self.yMax()
                         let xScale = width / Double(count - 1)
@@ -65,17 +65,17 @@ struct Graph: View {
                                 }
                             }
                         }
-                    }
-                }.stroke(Color.yellow).opacity(0.6)
+                    }.stroke(Color.yellow).opacity(0.6)
+                }
             }
 
             // Historic factory values
             GeometryReader { geometry in
-                Path() { path in
-                    let width  = Double(geometry.size.width) - 60.0
-                    let height = Double(geometry.size.height)
-                    let count = self.history.factoryValues.count
-                    if count > 0 {
+                let count = self.history.factoryValues.count
+                if count > 0 {
+                    Path() { path in
+                        let width  = Double(geometry.size.width) - 60.0
+                        let height = Double(geometry.size.height)
                         let v = self.history.factoryValues.map{$0.value}
                         let yScale = (height - 20.0) / self.yMax()
                         let xScale = width / Double(count - 1)
@@ -92,17 +92,17 @@ struct Graph: View {
                                 }
                             }
                         }
-                    }
-                }.stroke(Color.orange).opacity(0.6)
+                    }.stroke(Color.orange).opacity(0.6)
+                }
             }
 
             // Historic calibrated values
             GeometryReader { geometry in
-                Path() { path in
-                    let width  = Double(geometry.size.width) - 60.0
-                    let height = Double(geometry.size.height)
-                    let count = self.history.calibratedValues.count
-                    if count > 0 {
+                let count = self.history.calibratedValues.count
+                if count > 0 {
+                    Path() { path in
+                        let width  = Double(geometry.size.width) - 60.0
+                        let height = Double(geometry.size.height)
                         let v = self.history.calibratedValues.map{$0.value}
                         let yScale = (height - 20.0) / self.yMax()
                         let xScale = width / Double(count - 1)
@@ -119,8 +119,8 @@ struct Graph: View {
                                 }
                             }
                         }
-                    }
-                }.stroke(Color.purple).opacity(0.75)
+                    }.stroke(Color.purple).opacity(0.75)
+                }
             }
 
 
