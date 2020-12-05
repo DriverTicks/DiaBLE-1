@@ -18,7 +18,7 @@ struct Monitor: View {
         NavigationView {
 
             VStack {
-                if !editingCalibration {
+                if !(editingCalibration && showingCalibrationParameters)  {
                     Spacer()
                 }
 
@@ -70,7 +70,7 @@ struct Monitor: View {
                 Graph().frame(width: 31 * 7 + 60, height: 150)
 
 
-                if !editingCalibration {
+                if !(editingCalibration && showingCalibrationParameters) {
 
                     VStack {
 
@@ -226,26 +226,25 @@ struct Monitor: View {
                                     if editingCalibration {
                                         Button {
                                             withAnimation { editingCalibration = false }
-                                            settings.calibration = Calibration()
                                         } label: {
-                                            Text("Use").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                                            Text("Use").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
 
                                         Button {
                                             withAnimation { editingCalibration = false }
                                             settings.calibration = app.calibration
                                         } label: {
-                                            Text("Save").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                                            Text("Save").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
                                     }
 
-                                    if settings.calibration != Calibration() {
+                                    if settings.calibration != Calibration() && app.calibration != settings.oopCalibration {
                                         Button {
                                             withAnimation { editingCalibration = false }
                                             app.calibration = settings.calibration
                                             app.main.applyCalibration(sensor: app.sensor)
                                         } label: {
-                                            Text("Load").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                                            Text("Load").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
                                     }
 
@@ -256,7 +255,7 @@ struct Monitor: View {
                                             settings.calibration = Calibration()
                                             app.main.applyCalibration(sensor: app.sensor)
                                         } label: {
-                                            Text("Restore OOP").bold().padding(.horizontal, 4).padding(4).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                                            Text("Restore OOP").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
                                     }
 

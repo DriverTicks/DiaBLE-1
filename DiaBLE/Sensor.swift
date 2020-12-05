@@ -543,7 +543,7 @@ extension Libre2 {
 }
 
 
-// https://github.com/dabear/SwitftLibreOOPWebPublic/blob/master/SwiftLibreOOPWeb/Model/SensorData.swift
+// https://github.com/dabear/LibreTransmitter/blob/main/LibreSensor/SensorContents/SensorData.swift
 
 func readBits(_ buffer: Data, _ byteOffset: Int, _ bitOffset: Int, _ bitCount: Int) -> Int {
     guard bitCount != 0 else {
