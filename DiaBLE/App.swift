@@ -54,7 +54,7 @@ class AppState: ObservableObject {
 
     @Published var calibration: Calibration = Calibration() {
         didSet(value) {
-            if main != nil && editingCalibration {
+            if main != nil {
                 main.applyCalibration(sensor: sensor)
             }
         }

@@ -14,6 +14,12 @@ struct Monitor: View {
 
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
+    func endEditingCalibration() {
+        withAnimation { editingCalibration = false }
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+
+    }
+
     var body: some View {
         NavigationView {
 
@@ -143,15 +149,14 @@ struct Monitor: View {
                                         VStack(spacing: 0) {
                                             HStack {
                                                 Text("Slope slope:")
-                                                TextField("Slope slope", value: $app.calibration.slopeSlope, formatter: settings.numberFormatter,
-                                                          onEditingChanged: { changed in
-                                                            app.main.applyCalibration(sensor: app.sensor)
-                                                          }).foregroundColor(.purple)
-                                                    .onTapGesture {
-                                                        withAnimation {
-                                                            editingCalibration = true
-                                                        }
+                                                TextField("Slope slope", value: $app.calibration.slopeSlope,
+                                                          formatter: settings.numberFormatter) { editing in
+                                                    if !editing {
+                                                        // TODO: update when loosing focus
                                                     }
+                                                }
+                                                .foregroundColor(.purple)
+                                                .onTapGesture { withAnimation { editingCalibration = true } }
                                             }
                                             if editingCalibration {
                                                 Slider(value: $app.calibration.slopeSlope, in: 0.00001 ... 0.00002, step: 0.00000005)
@@ -161,15 +166,14 @@ struct Monitor: View {
                                         VStack(spacing: 0) {
                                             HStack {
                                                 Text("Slope offset:")
-                                                TextField("Slope offset", value: $app.calibration.offsetSlope, formatter: settings.numberFormatter,
-                                                          onEditingChanged: { changed in
-                                                            app.main.applyCalibration(sensor: app.sensor)
-                                                          }).foregroundColor(.purple)
-                                                    .onTapGesture {
-                                                        withAnimation {
-                                                            editingCalibration = true
-                                                        }
+                                                TextField("Slope offset", value: $app.calibration.offsetSlope,
+                                                          formatter: settings.numberFormatter) { editing in
+                                                    if !editing {
+                                                        // TODO: update when loosing focus
                                                     }
+                                                }
+                                                .foregroundColor(.purple)
+                                                .onTapGesture { withAnimation { editingCalibration = true } }
                                             }
                                             if editingCalibration {
                                                 Slider(value: $app.calibration.offsetSlope, in: -0.02 ... 0.02, step: 0.0001)
@@ -181,15 +185,14 @@ struct Monitor: View {
                                         VStack(spacing: 0) {
                                             HStack {
                                                 Text("Offset slope:")
-                                                TextField("Offset slope", value: $app.calibration.slopeOffset, formatter: settings.numberFormatter,
-                                                          onEditingChanged: { changed in
-                                                            app.main.applyCalibration(sensor: app.sensor)
-                                                          }).foregroundColor(.purple)
-                                                    .onTapGesture {
-                                                        withAnimation {
-                                                            editingCalibration = true
-                                                        }
+                                                TextField("Offset slope", value: $app.calibration.slopeOffset,
+                                                          formatter: settings.numberFormatter) { editing in
+                                                    if !editing {
+                                                        // TODO: update when loosing focus
                                                     }
+                                                }
+                                                .foregroundColor(.purple)
+                                                .onTapGesture { withAnimation { editingCalibration = true } }
                                             }
                                             if editingCalibration {
                                                 Slider(value: $app.calibration.slopeOffset, in: -0.01 ... 0.01, step: 0.00005)
@@ -199,15 +202,14 @@ struct Monitor: View {
                                         VStack(spacing: 0) {
                                             HStack {
                                                 Text("Offset offset:")
-                                                TextField("Offset offset", value: $app.calibration.offsetOffset, formatter: settings.numberFormatter,
-                                                          onEditingChanged: { changed in
-                                                            app.main.applyCalibration(sensor: app.sensor)
-                                                          }).foregroundColor(.purple)
-                                                    .onTapGesture {
-                                                        withAnimation {
-                                                            editingCalibration = true
-                                                        }
+                                                TextField("Offset offset", value: $app.calibration.offsetOffset,
+                                                          formatter: settings.numberFormatter) { editing in
+                                                    if !editing {
+                                                        // TODO: update when loosing focus
                                                     }
+                                                }
+                                                .foregroundColor(.purple)
+                                                .onTapGesture {  withAnimation { editingCalibration = true } }
                                             }
                                             if editingCalibration {
                                                 Slider(value: $app.calibration.offsetOffset, in: -100 ... 100, step: 0.5)
@@ -225,35 +227,35 @@ struct Monitor: View {
 
                                     if editingCalibration {
                                         Button {
-                                            withAnimation { editingCalibration = false }
+                                            endEditingCalibration()
                                         } label: {
                                             Text("Use").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
 
-                                        Button {
-                                            withAnimation { editingCalibration = false }
-                                            settings.calibration = app.calibration
-                                        } label: {
-                                            Text("Save").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                                        if app.calibration != settings.calibration && app.calibration != settings.oopCalibration {
+                                            Button {
+                                                endEditingCalibration()
+                                                settings.calibration = app.calibration
+                                            } label: {
+                                                Text("Save").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                                            }
                                         }
                                     }
 
-                                    if settings.calibration != .empty && app.calibration != settings.calibration {
+                                    if settings.calibration != .empty && (app.calibration != settings.calibration || app.calibration == .empty) {
                                         Button {
-                                            withAnimation { editingCalibration = false }
+                                            endEditingCalibration()
                                             app.calibration = settings.calibration
-                                            app.main.applyCalibration(sensor: app.sensor)
                                         } label: {
                                             Text("Load").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
                                     }
 
-                                    if settings.oopCalibration != .empty && (app.calibration != settings.oopCalibration || app.calibration == .empty) {
+                                    if settings.oopCalibration != .empty && ((app.calibration != settings.oopCalibration && editingCalibration) || app.calibration == .empty) {
                                         Button {
-                                            withAnimation { editingCalibration = false }
+                                            endEditingCalibration()
                                             app.calibration = settings.oopCalibration
                                             settings.calibration = Calibration()
-                                            app.main.applyCalibration(sensor: app.sensor)
                                         } label: {
                                             Text("Restore OOP").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                                         }
