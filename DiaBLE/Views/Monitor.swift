@@ -238,7 +238,7 @@ struct Monitor: View {
                                         }
                                     }
 
-                                    if settings.calibration != Calibration() && app.calibration != settings.oopCalibration {
+                                    if settings.calibration != Calibration() && app.calibration != settings.calibration {
                                         Button {
                                             withAnimation { editingCalibration = false }
                                             app.calibration = settings.calibration
