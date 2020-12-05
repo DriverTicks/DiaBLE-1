@@ -337,7 +337,7 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
                         let decoder = JSONDecoder()
                         if let oopData = try? decoder.decode(GlucoseSpaceHistoryResponse.self, from: data) {
                             let realTimeGlucose = oopData.realTimeGlucose.value
-                            if realTimeGlucose > 0 {
+                            if realTimeGlucose > 0 && !self.settings.calibrating {
                                 sensor.currentGlucose = realTimeGlucose
                             }
                             // PROJECTED_HIGH_GLUCOSE | HIGH_GLUCOSE | GLUCOSE_OK | LOW_GLUCOSE | PROJECTED_LOW_GLUCOSE | NOT_DETERMINED
