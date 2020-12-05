@@ -28,6 +28,14 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
         history = History()
         settings = Settings()
 
+        if settings.calibrating {
+            if settings.oopCalibration != .empty {
+                app.calibration = settings.oopCalibration
+            } else {
+                app.calibration = settings.calibration
+            }
+        }
+
         bluetoothDelegate = BluetoothDelegate()
         centralManager = CBCentralManager(delegate: bluetoothDelegate,
                                           queue: nil,

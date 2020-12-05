@@ -28,6 +28,15 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
         log = Log()
         history = History()
         settings = Settings()
+
+        if settings.calibrating {
+            if settings.oopCalibration != .empty {
+                app.calibration = settings.oopCalibration
+            } else {
+                app.calibration = settings.calibration
+            }
+        }
+
         extendedSession = WKExtendedRuntimeSession()
 
         bluetoothDelegate = BluetoothDelegate()
@@ -45,7 +54,6 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
         app.main = self
         extendedSession.delegate = self
         bluetoothDelegate.main = self
-        centralManager.delegate = bluetoothDelegate
 
         if let healthKit = healthKit {
             healthKit.main = self

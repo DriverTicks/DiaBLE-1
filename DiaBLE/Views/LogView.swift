@@ -83,6 +83,7 @@ struct LogView: View {
                         }
                     }
                     .background(settings.debugLevel == 1 ? Color.accentColor : Color.clear)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
                     .foregroundColor(settings.debugLevel == 1 ? .black : .accentColor)
                     .padding(.bottom, 6)
 
