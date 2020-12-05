@@ -378,6 +378,8 @@ struct Calibration: Codable, Equatable {
             }
         }
     }
+
+    static var empty = Calibration()
 }
 
 

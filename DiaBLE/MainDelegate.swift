@@ -242,7 +242,7 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
                             self.errorStatus("OOP calibration not valid")
                         } else {
                             self.settings.oopCalibration = oopCalibration.parameters
-                            if self.app.calibration == Calibration() || (self.app.calibration != self.settings.calibration) {
+                            if self.app.calibration == .empty || (self.app.calibration != self.settings.calibration) {
                                 self.app.calibration = oopCalibration.parameters
                             }
                         }
@@ -377,7 +377,7 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
         
         if let sensor = sensor, settings.calibrating {
             
-            if sensor.history.count > 0 && app.calibration != Calibration() {
+            if sensor.history.count > 0 && app.calibration != .empty {
                 
                 var calibratedTrend = sensor.trend
                 for i in 0 ..< calibratedTrend.count {

@@ -137,7 +137,7 @@ struct Monitor: View {
 
                         DisclosureGroup(isExpanded: $showingCalibrationParameters) {
 
-                            if app.calibration != Calibration() {
+                            if app.calibration != .empty {
                                 VStack(spacing: 6) {
                                     HStack {
                                         VStack(spacing: 0) {
@@ -238,7 +238,7 @@ struct Monitor: View {
                                         }
                                     }
 
-                                    if settings.calibration != Calibration() && app.calibration != settings.calibration {
+                                    if settings.calibration != .empty && app.calibration != settings.calibration {
                                         Button {
                                             withAnimation { editingCalibration = false }
                                             app.calibration = settings.calibration
@@ -248,7 +248,7 @@ struct Monitor: View {
                                         }
                                     }
 
-                                    if app.calibration != settings.oopCalibration {
+                                    if settings.oopCalibration != .empty && (app.calibration != settings.oopCalibration || app.calibration == .empty) {
                                         Button {
                                             withAnimation { editingCalibration = false }
                                             app.calibration = settings.oopCalibration
