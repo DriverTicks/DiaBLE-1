@@ -112,7 +112,7 @@ struct Monitor: View {
             HStack {
                 Spacer()
 
-                NavigationLink(destination: ContentView().environmentObject(app).environmentObject(history).environmentObject(log).environmentObject(settings)) {
+                NavigationLink(destination: ContentView()) {
                     Image(systemName: "chevron.left.circle.fill").resizable().frame(width: 16, height: 16).foregroundColor(.blue)
                 }.frame(height: 16)
 
@@ -139,7 +139,7 @@ struct Monitor: View {
 
                 Spacer()
 
-                NavigationLink(destination: Details().environmentObject(app).environmentObject(history).environmentObject(settings)) {
+                NavigationLink(destination: Details()) {
                     Image(systemName: "info.circle").resizable().frame(width: 16, height: 16).foregroundColor(.blue)
                 }.frame(height: 16)
                 Spacer()

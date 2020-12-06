@@ -40,7 +40,7 @@ struct SettingsView: View {
                         }
                     }.foregroundColor(.accentColor)
 
-                    NavigationLink(destination: Details().environmentObject(app).environmentObject(settings)) {
+                    NavigationLink(destination: Details()) {
                         Text("Details").bold().padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                     }
                 }

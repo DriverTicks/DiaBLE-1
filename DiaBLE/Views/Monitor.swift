@@ -113,7 +113,7 @@ struct Monitor: View {
                             .padding(.vertical, 5)
                             .frame(maxWidth: .infinity)
 
-                        NavigationLink(destination: Details().environmentObject(app).environmentObject(settings)) {
+                        NavigationLink(destination: Details()) {
                             Text("Details").font(.footnote).bold().fixedSize()
                                 .padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                         }

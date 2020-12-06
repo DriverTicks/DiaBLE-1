@@ -15,13 +15,13 @@ struct ContentView: View {
             ScrollView {
                 VStack(spacing: -4) {
                     HStack(spacing: 10) {
-                        NavigationLink(destination: Monitor().environmentObject(app).environmentObject(log).environmentObject(history).environmentObject(settings), isActive: $isMonitorActive) {
+                        NavigationLink(destination: Monitor(), isActive: $isMonitorActive) {
                             VStack {
                                 Image(systemName: "gauge").resizable().frame(width: 40, height: 40).offset(y: 4)
                                 Text("Monitor").bold().foregroundColor(.blue)
                             }.frame(maxWidth: .infinity).padding(.vertical, 6)
                         }
-                        NavigationLink(destination: Details().environmentObject(app).environmentObject(settings)) {
+                        NavigationLink(destination: Details()) {
                             VStack {
                                 Image(systemName: "info.circle").resizable().frame(width: 40, height: 40).offset(y: 4)
                                 Text("Details").bold().foregroundColor(.blue).bold()
@@ -29,13 +29,13 @@ struct ContentView: View {
                         }
                     }
                     HStack(spacing: 10) {
-                        NavigationLink(destination: LogView().environmentObject(app).environmentObject(log).environmentObject(settings)) {
+                        NavigationLink(destination: LogView()) {
                             VStack {
                                 Image(systemName: "doc.plaintext").resizable().frame(width: 40, height: 40).offset(y: 4)
                                 Text("Log").bold().foregroundColor(.blue)
                             }.frame(maxWidth: .infinity).padding(.vertical, 6)
                         }
-                        NavigationLink(destination: SettingsView().environmentObject(app).environmentObject(log).environmentObject(history).environmentObject(settings)) {
+                        NavigationLink(destination: SettingsView()) {
                             VStack {
                                 Image(systemName: "gear").resizable().frame(width: 40, height: 40).offset(y: 4)
                                 Text("Settings").bold().tracking(-0.5).foregroundColor(.blue)
@@ -44,13 +44,13 @@ struct ContentView: View {
                     }
                     HStack(spacing: 10) {
                         // TODO
-                        NavigationLink(destination: DataView().environmentObject(app).environmentObject(log).environmentObject(history).environmentObject(settings)) {
+                        NavigationLink(destination: DataView()) {
                             VStack {
                                 Image(systemName: "tray.full.fill").resizable().frame(width: 40, height: 40).offset(y: 4)
                                 Text("Data").bold().foregroundColor(.blue)
                             }.frame(maxWidth: .infinity).padding(.vertical, 6)
                         }
-                        NavigationLink(destination: OnlineView().environmentObject(app).environmentObject(history).environmentObject(settings)) {
+                        NavigationLink(destination: OnlineView()) {
                             VStack {
                                 Image(systemName: "globe").resizable().frame(width: 40, height: 40).offset(y: 4)
                                 Text("Online").bold().foregroundColor(.blue)

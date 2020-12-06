@@ -58,7 +58,7 @@ struct SettingsView: View {
                 Spacer()
 
                 HStack(spacing: 3) {
-                    NavigationLink(destination: Monitor().environmentObject(app).environmentObject(history).environmentObject(settings)) {
+                    NavigationLink(destination: Monitor()) {
                         Image(systemName: "timer").resizable().frame(width: 20, height: 20)
                     }.simultaneousGesture(TapGesture().onEnded {
                         // app.selectedTab = (settings.preferredTransmitter != .none) ? .monitor : .log
