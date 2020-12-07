@@ -13,6 +13,18 @@ enum SensorType: String, CustomStringConvertible {
     case libreProH    = "Libre Pro/H"
     case unknown      = "Libre"
 
+    init(patchInfo: PatchInfo) {
+        switch patchInfo[0] {
+        case 0xDF: self = .libre1
+        case 0xA2: self = .libre1
+        case 0x9D: self = .libre2
+        case 0xE5: self = .libreUS14day
+        case 0x76: self = .libre2US
+        case 0x70: self = .libreProH
+        default:   self = .unknown
+        }
+    }
+
     var description: String { self.rawValue }
 
     var serialPrefix: String {    // equals product family
@@ -21,19 +33,6 @@ enum SensorType: String, CustomStringConvertible {
         case .libre2:    return "3"
         default:         return "0"
         }
-    }
-}
-
-
-func sensorType(patchInfo: PatchInfo) -> SensorType {
-    switch patchInfo[0] {
-    case 0xDF: return .libre1
-    case 0xA2: return .libre1
-    case 0x9D: return .libre2
-    case 0xE5: return .libreUS14day
-    case 0x76: return .libre2US
-    case 0x70: return .libreProH
-    default:   return .unknown
     }
 }
 
@@ -80,14 +79,15 @@ enum SensorState: UInt8, CustomStringConvertible {
     }
 }
 
+
 struct CalibrationInfo: Codable, Equatable {
-   var i1: Int = 0
-   var i2: Int = 0
-   var i3: Int = 0
-   var i4: Int = 0
-   var i5: Int = 0
-   var i6: Int = 0
- }
+    var i1: Int = 0
+    var i2: Int = 0
+    var i3: Int = 0
+    var i4: Int = 0
+    var i5: Int = 0
+    var i6: Int = 0
+}
 
 
 class Sensor: ObservableObject {
@@ -110,7 +110,7 @@ class Sensor: ObservableObject {
     var patchInfo: PatchInfo = Data() {
         willSet(info) {
             if info.count > 0 {
-                type = sensorType(patchInfo: info)
+                type = SensorType(patchInfo: info)
             } else {
                 type = .unknown
             }
@@ -258,16 +258,16 @@ class Sensor: ObservableObject {
 
 
     var calibrationInfo: CalibrationInfo {
-       let i1 = readBits(fram, 2, 0, 3)
-       let i2 = readBits(fram, 2, 3, 0xa)
-       let i3 = readBits(fram, 0x150, 0, 8)
-       let i4 = readBits(fram, 0x150, 8, 0xe)
-       let negativei3 = readBits(fram, 0x150, 0x21, 1) != 0
-       let i5 = readBits(fram, 0x150, 0x28, 0xc) << 2
-       let i6 = readBits(fram, 0x150, 0x34, 0xc) << 2
+        let i1 = readBits(fram, 2, 0, 3)
+        let i2 = readBits(fram, 2, 3, 0xa)
+        let i3 = readBits(fram, 0x150, 0, 8)
+        let i4 = readBits(fram, 0x150, 8, 0xe)
+        let negativei3 = readBits(fram, 0x150, 0x21, 1) != 0
+        let i5 = readBits(fram, 0x150, 0x28, 0xc) << 2
+        let i6 = readBits(fram, 0x150, 0x34, 0xc) << 2
 
-       return CalibrationInfo(i1: i1, i2: i2, i3: negativei3 ? -i3 : i3, i4: i4, i5: i5, i6: i6)
-     }
+        return CalibrationInfo(i1: i1, i2: i2, i3: negativei3 ? -i3 : i3, i4: i4, i5: i5, i6: i6)
+    }
 
 }
 

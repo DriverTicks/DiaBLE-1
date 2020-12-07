@@ -173,7 +173,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
 
             // https://www.st.com/en/embedded-software/stsw-st25ios001.html#get-software
 
-            #if !targetEnvironment(macCatalyst)    // the new Result API doosn't compile in Catalyst 14
+            #if !targetEnvironment(macCatalyst)    // the new Result handlers don't compile in Catalyst 14
 
             self.connectedTag?.getSystemInfo(requestFlags: [.address, .highDataRate]) { response in
 

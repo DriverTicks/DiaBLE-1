@@ -453,7 +453,7 @@ class Bubble: Transmitter {
             firmware = "\(data[2]).\(data[3])"
             hardware = "\(data[data.count - 2]).\(data[data.count - 1])"
             main.log("\(name): battery: \(battery), firmware: \(firmware), hardware: \(hardware)")
-            let libreType = main.settings.patchInfo.count > 0 ? sensorType(patchInfo: main.settings.patchInfo) : .unknown
+            let libreType = main.settings.patchInfo.count > 0 ? SensorType(patchInfo: main.settings.patchInfo) : .unknown
             if Double(firmware)! >= 2.6 && (libreType == .libre2 || libreType == .libreUS14day) {
                 write([0x08, 0x01, 0x00, 0x00, 0x00, 0x2B])
             } else {
