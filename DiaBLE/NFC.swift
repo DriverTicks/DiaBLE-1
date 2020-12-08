@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 
 // https://fortinetweb.s3.amazonaws.com/fortiguard/research/techreport.pdf
@@ -10,8 +11,8 @@ import Foundation
 
 
 struct NFCCommand {
-    let code: UInt8
-    let parameters: Data
+    let code: Int
+    var parameters: Data = Data()
 }
 
 
@@ -30,9 +31,15 @@ extension Sensor {
         case .libre1,
              .libreProH: return NFCCommand(code: 0xA0, parameters: backdoor)
         case .libre2:    return nfcCommand(.activate)
-        default:         return NFCCommand(code: 0x00, parameters: Data())
+        default:         return NFCCommand(code: 0x00)
         }
     }
+
+    var getPachInfoCommand: NFCCommand { NFCCommand(code: 0xA1) }
+    var lockCommand: NFCCommand        { NFCCommand(code: 0xA2) }
+    var readRawCommand: NFCCommand     { NFCCommand(code: 0xA3) }
+    var unlockCommand: NFCCommand      { NFCCommand(code: 0xA4) }
+
 
     enum Subcommand: UInt8, CustomStringConvertible {
         case activate        = 0x1b
@@ -308,7 +315,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                                     self.sensor.unlockCode = UInt32(self.main.settings.activeSensorUnlockCode)
                                                     let cmd = self.sensor.nfcCommand(subCmd)
                                                     self.main.debugLog("NFC: sending \(self.sensor.type) command to \(subCmd.description): code: 0x\(String(format: "%0X", cmd.code)), parameters: 0x\(cmd.parameters.hex) (unlock code: \(self.sensor.unlockCode))")
-                                                    self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: Int(cmd.code), customRequestParameters:  cmd.parameters) { response, error in
+                                                    self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: cmd.code, customRequestParameters:  cmd.parameters) { response, error in
                                                         self.main.debugLog("NFC: '\(subCmd.description)' command response (\(response.count) bytes): 0x\(response.hex), error: \(error?.localizedDescription ?? "none")")
                                                         if subCmd == .enableStreaming && response.count == 6 {
                                                             self.main.debugLog("NFC: enabled BLE streaming on \(self.sensor.type) \(self.sensor.serial) (unlock code: \(self.sensor.unlockCode), MAC address: \(Data(response.reversed()).hexAddress))")
@@ -397,7 +404,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
 
         if buffer.count == 0 { self.main.debugLog("NFC: sending 0x\(String(format: "%0x", readRawCommand.code)) 0x07 0x\(readRawCommand.parameters.hex) command (\(sensor.type) read raw)") }
 
-        self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: Int(readRawCommand.code), customRequestParameters: readRawCommand.parameters) { response in
+        self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: readRawCommand.code, customRequestParameters: readRawCommand.parameters) { response in
 
             switch response {
 
