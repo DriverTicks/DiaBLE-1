@@ -135,7 +135,7 @@ class Sensor: ObservableObject {
     var fram: Data = Data() {
         didSet {
             encryptedFram = Data()
-            if fram.count >= 344 && (type == .libre2 || type == .libreUS14day) && UInt16(fram[0], fram[1]) != crc16(fram[2...23]) {
+            if fram.count >= 344 && (type == .libre2 || type == .libreUS14day) && UInt16(fram[0...1]) != crc16(fram[2...23]) {
                 encryptedFram = fram
                 if let decryptedFRAM = try? Data(Libre2.decryptFRAM(type: type, id: uid, info: patchInfo, data: fram)) {
                     fram = decryptedFRAM
@@ -241,16 +241,16 @@ class Sensor: ObservableObject {
             crcReport = "No FRAM read: can't verify CRC"
 
         } else {
-            let headerCRC = fram[0...1].hex
-            let bodyCRC   = fram[24...25].hex
-            let footerCRC = fram[320...321].hex
-            let computedHeaderCRC = String(format: "%04x", crc16(fram[2...23]))
-            let computedBodyCRC   = String(format: "%04x", crc16(fram[26...319]))
-            let computedFooterCRC = String(format: "%04x", crc16(fram[322...343]))
+            let headerCRC = UInt16(fram[0], fram[1])
+            let bodyCRC   = UInt16(fram[24], fram[25])
+            let footerCRC = UInt16(fram[320], fram[321])
+            let computedHeaderCRC = crc16(fram[2...23])
+            let computedBodyCRC   = crc16(fram[26...319])
+            let computedFooterCRC = crc16(fram[322...343])
 
-            var report = "Sensor header CRC16: \(headerCRC), computed: \(computedHeaderCRC) -> \(headerCRC == computedHeaderCRC ? "OK" : "FAILED")"
-            report += "\nSensor body CRC16: \(bodyCRC), computed: \(computedBodyCRC) -> \(bodyCRC == computedBodyCRC ? "OK" : "FAILED")"
-            report += "\nSensor footer CRC16: \(footerCRC), computed: \(computedFooterCRC) -> \(footerCRC == computedFooterCRC ? "OK" : "FAILED")"
+            var report = "Sensor header CRC16: \(String(format: "%04x", headerCRC)), computed: \(String(format: "%04x", computedHeaderCRC)) -> \(headerCRC == computedHeaderCRC ? "OK" : "FAILED")"
+            report += "\nSensor body CRC16: \(String(format: "%04x", bodyCRC)), computed: \(String(format: "%04x", computedBodyCRC)) -> \(bodyCRC == computedBodyCRC ? "OK" : "FAILED")"
+            report += "\nSensor footer CRC16: \(String(format: "%04x", footerCRC)), computed: \(String(format: "%04x", computedFooterCRC)) -> \(footerCRC == computedFooterCRC ? "OK" : "FAILED")"
 
             crcReport = report
         }
@@ -305,7 +305,7 @@ func crc16(_ data: Data) -> UInt16 {
         reverseCrc = reverseCrc << 1 | crc & 1
         crc >>= 1
     }
-    return reverseCrc.byteSwapped
+    return reverseCrc
 }
 
 
@@ -316,17 +316,17 @@ func checksummedFRAM(_ data: Data) -> Data {
     let bodyCRC =   crc16(fram[ 3 * 8 + 2 ..< 40 * 8])
     let footerCRC = crc16(fram[40 * 8 + 2 ..< 43 * 8])
 
-    fram[ 0] =         UInt8(headerCRC >> 8)
-    fram[ 1] =         UInt8(headerCRC & 0x00FF)
-    fram[ 3 * 8] =     UInt8(bodyCRC >> 8)
-    fram[ 3 * 8 + 1] = UInt8(bodyCRC & 0x00FF)
-    fram[40 * 8] =     UInt8(footerCRC >> 8)
-    fram[40 * 8 + 1] = UInt8(footerCRC & 0x00FF)
+    fram[ 0] =         UInt8(headerCRC & 0xFF)
+    fram[ 1] =         UInt8(headerCRC >> 8)
+    fram[ 3 * 8] =     UInt8(bodyCRC & 0xFF)
+    fram[ 3 * 8 + 1] = UInt8(bodyCRC >> 8)
+    fram[40 * 8] =     UInt8(footerCRC & 0xFF)
+    fram[40 * 8 + 1] = UInt8(footerCRC >> 8)
 
     if fram.count >= 244 * 8 {
-        let commandsCRC = crc16(fram[43 * 8 + 2 ..< (244 - 6) * 8])    // Libre 1: 0x9e42
-        fram[43 * 8] =     UInt8(commandsCRC >> 8)
-        fram[43 * 8 + 1] = UInt8(commandsCRC & 0x00FF)
+        let commandsCRC = crc16(fram[43 * 8 + 2 ..< (244 - 6) * 8])    // Libre 1: 0x429e
+        fram[43 * 8] =     UInt8(commandsCRC & 0xFF)
+        fram[43 * 8 + 1] = UInt8(commandsCRC >> 8)
     }
     return fram
 }
@@ -411,7 +411,7 @@ enum Libre2 {
             value ^ key[i]
         }
 
-        guard crc16(Data(result.prefix(42))) == UInt16(result[42], result[43]) else {
+        guard crc16(Data(result.prefix(42))) == UInt16(Data(result[42...43])) else {
             struct DecryptBLEError: LocalizedError {
                 var errorDescription: String? { "BLE data decryption failed" }
             }
@@ -517,12 +517,12 @@ extension Libre2 {
         let t2 = processCrypto(input: prepareVariables2(id: id, i1: t11, i2: t12, i3: t13, i4: t14))
 
         // TODO extract if secret
-        let t31 = crc16(Data([0xc1, 0xc4, 0xc3, 0xc0, 0xd4, 0xe1, 0xe7, 0xba, UInt8(t2[0] & 0xFF), UInt8((t2[0] >> 8) & 0xFF)])).byteSwapped
+        let t31 = crc16(Data([0xc1, 0xc4, 0xc3, 0xc0, 0xd4, 0xe1, 0xe7, 0xba, UInt8(t2[0] & 0xFF), UInt8((t2[0] >> 8) & 0xFF)]))
         let t32 = crc16(Data([UInt8(t2[1] & 0xFF), UInt8((t2[1] >> 8) & 0xFF),
                               UInt8(t2[2] & 0xFF), UInt8((t2[2] >> 8) & 0xFF),
-                              UInt8(t2[3] & 0xFF), UInt8((t2[3] >> 8) & 0xFF)])).byteSwapped
-        let t33 = crc16(Data([ad[0], ad[1], ad[2], ad[3], ed[0], ed[1]])).byteSwapped
-        let t34 = crc16(Data([ed[2], ed[3], b[0], b[1], b[2], b[3]])).byteSwapped
+                              UInt8(t2[3] & 0xFF), UInt8((t2[3] >> 8) & 0xFF)]))
+        let t33 = crc16(Data([ad[0], ad[1], ad[2], ad[3], ed[0], ed[1]]))
+        let t34 = crc16(Data([ed[2], ed[3], b[0], b[1], b[2], b[3]]))
 
         let t4 = processCrypto(input: prepareVariables2(id: id, i1: t31, i2: t32, i3: t33, i4: t34))
 

@@ -365,7 +365,7 @@ class Libre: Transmitter {
             bleGlucose.append(glucose)
         }
 
-        let crc = UInt16(data[42], data[43])
+        let crc = UInt16(data[42...43])
         let computedCRC =  crc16(Data(data[0...41]))
 
         main.debugLog("Bluetooth: received BLE data 0x\(data.hex) (wear time: \(wearTimeMinutes) minutes (0x\(String(format: "%04x", wearTimeMinutes))), CRC: \(String(format: "%04x", crc)), computed CRC: \(String(format: "%04x", computedCRC))), glucose values: \(bleGlucose)")
