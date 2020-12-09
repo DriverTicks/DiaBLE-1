@@ -313,28 +313,40 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                                     let subCmd:Sensor.Subcommand = .enableStreaming
                                                     let currentUnlockCode = self.sensor.unlockCode
                                                     self.sensor.unlockCode = UInt32(self.main.settings.activeSensorUnlockCode)
+
                                                     let cmd = self.sensor.nfcCommand(subCmd)
                                                     self.main.debugLog("NFC: sending \(self.sensor.type) command to \(subCmd.description): code: 0x\(String(format: "%0X", cmd.code)), parameters: 0x\(cmd.parameters.hex) (unlock code: \(self.sensor.unlockCode))")
-                                                    self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: cmd.code, customRequestParameters:  cmd.parameters) { response, error in
-                                                        self.main.debugLog("NFC: '\(subCmd.description)' command response (\(response.count) bytes): 0x\(response.hex), error: \(error?.localizedDescription ?? "none")")
-                                                        if subCmd == .enableStreaming && response.count == 6 {
-                                                            self.main.debugLog("NFC: enabled BLE streaming on \(self.sensor.type) \(self.sensor.serial) (unlock code: \(self.sensor.unlockCode), MAC address: \(Data(response.reversed()).hexAddress))")
-                                                            self.main.settings.activeSensorSerial = self.sensor.serial
-                                                            self.main.settings.patchInfo = self.sensor.patchInfo
-                                                            self.main.settings.activeSensorAddress = Data(response.reversed())
-                                                            self.sensor.unlockCount = 0
-                                                            self.main.settings.activeSensorUnlockCount = 0
-                                                            self.main.settings.activeSensorCalibrationInfo = self.sensor.calibrationInfo
-                                                            // TODO: cancel connections also before scanning?
-                                                            self.main.rescan()
+                                                    self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: cmd.code, customRequestParameters:  cmd.parameters) { response in
 
-                                                        } else {
+                                                        switch response {
+
+                                                        case .failure(let error):
+                                                            self.main.debugLog("NFC: '\(subCmd.description)' command error: \(error.localizedDescription)")
                                                             self.sensor.unlockCode = currentUnlockCode
-                                                        }
-                                                        if subCmd == .activate && response.count == 4 {
-                                                            self.main.debugLog("NFC: after trying activating received \(response.hex) for the patch info \(patchInfo.hex)")
-                                                            // receiving 9d081000 for a patchInfo 9d0830010000 but state remaining .notActivated
-                                                            // TODO
+
+                                                        case.success(let output):
+                                                            self.main.debugLog("NFC: '\(subCmd.description)' command output (\(output.count) bytes): 0x\(output.hex)")
+
+                                                            if subCmd == .enableStreaming && output.count == 6 {
+                                                                self.main.debugLog("NFC: enabled BLE streaming on \(self.sensor.type) \(self.sensor.serial) (unlock code: \(self.sensor.unlockCode), MAC address: \(Data(output.reversed()).hexAddress))")
+                                                                self.main.settings.activeSensorSerial = self.sensor.serial
+                                                                self.main.settings.patchInfo = self.sensor.patchInfo
+                                                                self.main.settings.activeSensorAddress = Data(output.reversed())
+                                                                self.sensor.unlockCount = 0
+                                                                self.main.settings.activeSensorUnlockCount = 0
+                                                                self.main.settings.activeSensorCalibrationInfo = self.sensor.calibrationInfo
+
+                                                                // TODO: cancel connections also before scanning?
+                                                                self.main.rescan()
+
+                                                            }
+
+                                                            if subCmd == .activate && output.count == 4 {
+                                                                self.main.debugLog("NFC: after trying activating received \(output.hex) for the patch info \(patchInfo.hex)")
+                                                                // receiving 9d081000 for a patchInfo 9d0830010000 but state remaining .notActivated
+
+                                                                // TODO
+                                                            }
                                                         }
 
                                                         session.invalidate()
