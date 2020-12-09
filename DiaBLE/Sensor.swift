@@ -241,9 +241,9 @@ class Sensor: ObservableObject {
             crcReport = "No FRAM read: can't verify CRC"
 
         } else {
-            let headerCRC = UInt16(fram[0], fram[1])
-            let bodyCRC   = UInt16(fram[24], fram[25])
-            let footerCRC = UInt16(fram[320], fram[321])
+            let headerCRC = UInt16(fram[0...1])
+            let bodyCRC   = UInt16(fram[24...25])
+            let footerCRC = UInt16(fram[320...321])
             let computedHeaderCRC = crc16(fram[2...23])
             let computedBodyCRC   = crc16(fram[26...319])
             let computedFooterCRC = crc16(fram[322...343])
