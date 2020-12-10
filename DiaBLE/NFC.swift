@@ -76,7 +76,7 @@ extension Sensor {
     func nfcCommand(_ code: Subcommand) -> NFCCommand {
 
         var b: [UInt8] = []
-        var y: UInt16
+        var y: UInt16 = 0x1b6a
 
         if code == .enableStreaming {
 
@@ -91,12 +91,7 @@ extension Sensor {
                 UInt8((unlockCode >> 24) & 0xFF)
             ]
             y = UInt16(patchInfo[4...5]) ^ UInt16(b[1], b[0])
-
-        } else {
-            y = 0x1b6a
         }
-
-        let d = Libre2.usefulFunction(id: uid, x: UInt16(code.rawValue), y: y)
 
         var parameters = Data([code.rawValue])
 
@@ -104,6 +99,7 @@ extension Sensor {
             parameters += b
         }
 
+        let d = Libre2.usefulFunction(id: uid, x: UInt16(code.rawValue), y: y)
         parameters += d
 
         return NFCCommand(code: 0xA1, parameters: parameters)
@@ -122,6 +118,7 @@ import CoreNFC
 // TODO: reimplement using Combine
 
 enum TaskRequest {
+    case activate
     case enableStreaming
 }
 
@@ -266,8 +263,9 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                     if self.taskRequest != .none {
 
                         if self.sensor.type == .libre2 {
-                            // let subCmd:Sensor.Subcommand = .unknown0x1a // TEST
-                            let subCmd:Sensor.Subcommand = .enableStreaming
+                            let subCmd: Sensor.Subcommand = (self.taskRequest == .enableStreaming) ?
+                                .enableStreaming : .activate
+
                             let currentUnlockCode = self.sensor.unlockCode
                             self.sensor.unlockCode = UInt32(self.main.settings.activeSensorUnlockCode)
 
