@@ -7,6 +7,7 @@ struct Details: View {
     @EnvironmentObject var settings: Settings
 
     @State private var readingCountdown: Int = 0
+    @State private var showingNFCAlert = false
 
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -203,8 +204,32 @@ struct Details: View {
                             Text("Unlock Count")
                             TextField("Unlock Count", value: $settings.activeSensorUnlockCount, formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
                         }
+                        .font(.callout)
 
-                    }.font(.callout)
+                        HStack {
+                            Spacer()
+                            Button {
+                                if app.main.nfcReader.isNFCAvailable {
+                                    app.main.nfcReader.taskRequest = .enableStreaming
+                                    app.selectedTab = .log
+                                } else {
+                                    showingNFCAlert = true
+                                }
+                            } label: {
+                                HStack(spacing: 0) {
+                                    Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18) .padding(.horizontal, 8) //.padding(6)
+                                    Text("Pair").bold().padding(6)//.overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                                }.overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                            }
+                            .foregroundColor(.accentColor)
+                            .alert(isPresented: $showingNFCAlert) {
+                                Alert(
+                                    title: Text("NFC not supported"),
+                                    message: Text("This device doesn't allow scanning the Libre."))
+                            }
+                            Spacer()
+                        }.padding(.vertical, 12)
+                    }
                 }
 
 

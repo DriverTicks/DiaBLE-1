@@ -96,6 +96,7 @@ extension AppState {
         let app = AppState()
 
         app.transmitter = Transmitter(battery: 54, rssi: -75, firmware: "4.56", manufacturer: "Acme Inc.", hardware: "2.3", macAddress: Data([0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF]))
+        app.transmitter.type = .transmitter(.abbott)
         app.device = app.transmitter
         app.sensor = Sensor(state: .active, serial: "3MH001DG75W", age: 18705, uid: Data("2fe7b10000a407e0".bytes), patchInfo: Data("9d083001712b".bytes))
         app.selectedTab = tab

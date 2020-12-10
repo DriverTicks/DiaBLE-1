@@ -131,8 +131,12 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
     var connectedTag: NFCISO15693Tag?
     var sensor: Sensor!
 
-    // TODO: run the activation session via a "Re/Pair" button in Details
-    var taskRequest: TaskRequest? = .enableStreaming
+    var taskRequest: TaskRequest? = .enableStreaming {
+        didSet {
+            guard taskRequest != nil else { return }
+            startSession()
+        }
+    }
 
     /// Main app delegate to use its log()
     var main: MainDelegate!
@@ -259,7 +263,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
 
                     self.main.log("NFC: sensor serial number: \(self.sensor.serial)")
 
-                    if self.taskRequest != .none && self.main.settings.debugLevel > 0 {
+                    if self.taskRequest != .none {
 
                         if self.sensor.type == .libre2 {
                             // let subCmd:Sensor.Subcommand = .unknown0x1a // TEST
@@ -274,14 +278,14 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                 switch result {
 
                                 case .failure(let error):
-                                    self.main.debugLog("NFC: '\(subCmd.description)' command error: \(error.localizedDescription)")
+                                    self.main.log("NFC: '\(subCmd.description)' command error: \(error.localizedDescription)")
                                     self.sensor.unlockCode = currentUnlockCode
 
                                 case.success(let output):
-                                    self.main.debugLog("NFC: '\(subCmd.description)' command output (\(output.count) bytes): 0x\(output.hex)")
+                                    self.main.log("NFC: '\(subCmd.description)' command output (\(output.count) bytes): 0x\(output.hex)")
 
                                     if subCmd == .enableStreaming && output.count == 6 {
-                                        self.main.debugLog("NFC: enabled BLE streaming on \(self.sensor.type) \(self.sensor.serial) (unlock code: \(self.sensor.unlockCode), MAC address: \(Data(output.reversed()).hexAddress))")
+                                        self.main.log("NFC: enabled BLE streaming on \(self.sensor.type) \(self.sensor.serial) (unlock code: \(self.sensor.unlockCode), MAC address: \(Data(output.reversed()).hexAddress))")
                                         self.main.settings.activeSensorSerial = self.sensor.serial
                                         self.main.settings.patchInfo = self.sensor.patchInfo
                                         self.main.settings.activeSensorAddress = Data(output.reversed())
@@ -294,7 +298,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                     }
 
                                     if subCmd == .activate && output.count == 4 {
-                                        self.main.debugLog("NFC: after trying activating received \(output.hex) for the patch info \(patchInfo.hex)")
+                                        self.main.log("NFC: after trying activating received \(output.hex) for the patch info \(patchInfo.hex)")
                                         // receiving 9d081000 for a patchInfo 9d0830010000 but state remaining .notActivated
                                     }
                                 }
@@ -518,7 +522,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                         error = commandError
 
                                     case.success(let output):
-                                        self.main.debugLog("NFC: lock command result: 0x\(output.hex)")
+                                        self.main.debugLog("NFC: lock command output: 0x\(output.hex)")
                                     }
 
                                     handler(address, data, error)
