@@ -216,10 +216,10 @@ struct Details: View {
                                     showingNFCAlert = true
                                 }
                             } label: {
-                                HStack(spacing: 0) {
-                                    Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18) .padding(.horizontal, 8)
-                                    Text("Pair").bold().padding(6)
-                                }.overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                                VStack(spacing: 0) {
+                                    Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18) .padding(.horizontal, 8).padding( .vertical, 4)
+                                    Text("Pair").font(.footnote).bold().padding(.bottom, 2)
+                                }.overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.accentColor, lineWidth: 2))
                             }
                             .foregroundColor(.accentColor)
                             .alert(isPresented: $showingNFCAlert) {
@@ -228,7 +228,7 @@ struct Details: View {
                                     message: Text("This device doesn't allow scanning the Libre."))
                             }
                             Spacer()
-                        }.padding(.vertical, 12)
+                        }.padding(.vertical, 4)
                     }
                 }
 
