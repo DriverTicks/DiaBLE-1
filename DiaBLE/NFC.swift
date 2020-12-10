@@ -131,7 +131,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
     var connectedTag: NFCISO15693Tag?
     var sensor: Sensor!
 
-    var taskRequest: TaskRequest? = .enableStreaming {
+    var taskRequest: TaskRequest? {
         didSet {
             guard taskRequest != nil else { return }
             startSession()

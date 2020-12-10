@@ -217,8 +217,8 @@ struct Details: View {
                                 }
                             } label: {
                                 HStack(spacing: 0) {
-                                    Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18) .padding(.horizontal, 8) //.padding(6)
-                                    Text("Pair").bold().padding(6)//.overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
+                                    Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18) .padding(.horizontal, 8)
+                                    Text("Pair").bold().padding(6)
                                 }.overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2))
                             }
                             .foregroundColor(.accentColor)
