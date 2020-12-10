@@ -163,7 +163,7 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
     func parseSensorData(_ sensor: Sensor) {
 
         if sensor.encryptedFram.count > 0 {
-            log("Sensor encrypted FRAM: \(sensor.encryptedFram.hex)\ndecrypted:\n\(sensor.fram.hex)")
+            log("Sensor decrypted FRAM: \(sensor.fram.hex)")
         }
         log(sensor.crcReport)
         if sensor.crcReport.contains("FAILED") {
