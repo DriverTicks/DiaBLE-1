@@ -401,6 +401,8 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
     /// fram lock table: 0xF840, 32
     /// fram:   0xF860, 1952
 
+    #if !targetEnvironment(macCatalyst)    // the new Result handlers don't compile in Catalyst 14
+
 
     func readRaw(_ address: UInt16, _ bytes: Int, buffer: Data = Data(), handler: @escaping (UInt16, Data, Error?) -> Void) {
 
@@ -590,6 +592,8 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
             }
         }
     }
+
+    #endif
 
 }
 
