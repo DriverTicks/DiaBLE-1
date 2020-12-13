@@ -24,6 +24,8 @@ struct LogView: View {
 
                 VStack(alignment: .center, spacing: 8) {
 
+                    Spacer()
+
                     VStack(spacing: 0) {
 
                         Button {
@@ -34,11 +36,6 @@ struct LogView: View {
                             }
                         } label: {
                             Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18).padding(EdgeInsets(top: 10, leading: 6, bottom: 14, trailing: 0))
-                        }
-                        .alert(isPresented: $showingNFCAlert) {
-                            Alert(
-                                title: Text("NFC not supported"),
-                                message: Text("This device doesn't allow scanning the Libre."))
                         }
 
                         Button {
@@ -51,25 +48,29 @@ struct LogView: View {
                         }
                     }.foregroundColor(.accentColor)
 
-                    if app.deviceState == "Connected" {
 
-                        Text(readingCountdown > 0 || app.status.hasSuffix("sensor") ?
-                                "\(readingCountdown) s" : "")
-                            .fixedSize()
-                            .onReceive(timer) { _ in
-                                readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
-                            }.font(Font.caption.monospacedDigit()).foregroundColor(.orange)
-                    }
-
-                    // Same as in Monitor
-                    if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
+                    if (app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...")) && app.main.centralManager.state != .poweredOff {
                         Button {
                             app.main.centralManager.stopScan()
                             app.main.status("Stopped scanning")
                             app.main.log("Bluetooth: stopped scanning")
                         } label: {
                             Image(systemName: "stop.circle").resizable().frame(width: 32, height: 32)
-                        }.foregroundColor(.blue)
+                        }.foregroundColor(.red)
+                    } else {
+                        Image(systemName: "stop.circle").resizable().frame(width: 32, height: 32)
+                            .hidden()
+                    }
+
+                    if app.deviceState == "Connected" {
+                        Text(readingCountdown > 0 || app.status.hasSuffix("sensor") ?
+                                "\(readingCountdown) s" : "")
+                            .fixedSize()
+                            .onReceive(timer) { _ in
+                                readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
+                            }.font(Font.caption.monospacedDigit()).foregroundColor(.orange)
+                    } else {
+                        Text("").fixedSize().font(Font.caption.monospacedDigit()).hidden()
                     }
 
                     Spacer()
@@ -87,22 +88,26 @@ struct LogView: View {
                     .foregroundColor(settings.debugLevel == 1 ? .black : .accentColor)
                     .padding(.bottom, 6)
 
-                    Button {
-                        UIPasteboard.general.string = log.text
-                    } label: {
-                        VStack {
-                            Image(systemName: "doc.on.doc").resizable().frame(width: 24, height: 24)
-                            Text("Copy").offset(y: -6)
-                        }
-                    }
+                    VStack(spacing: 0) {
 
-                    Button {
-                        log.text = "Log cleared \(Date().local)\n"
-                    } label: {
-                        VStack {
-                            Image(systemName: "clear").resizable().frame(width: 24, height: 24)
-                            Text("Clear").offset(y: -6)
+                        Button {
+                            UIPasteboard.general.string = log.text
+                        } label: {
+                            VStack {
+                                Image(systemName: "doc.on.doc").resizable().frame(width: 24, height: 24)
+                                Text("Copy").offset(y: -6)
+                            }
                         }
+
+                        Button {
+                            log.text = "Log cleared \(Date().local)\n"
+                        } label: {
+                            VStack {
+                                Image(systemName: "clear").resizable().frame(width: 24, height: 24)
+                                Text("Clear").offset(y: -6)
+                            }
+                        }
+
                     }
 
                     Button {
@@ -132,12 +137,70 @@ struct LogView: View {
 
                     Spacer()
 
-                }.font(.system(.footnote))
+                }.font(.footnote)
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("Log")
-            .background(Color.black)
-        }.navigationViewStyle(StackNavigationViewStyle())
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+
+                    HStack(alignment: .bottom) {
+                        Button {
+                            // TODO: filter log.text
+                            app.main.log("TODO: filter history")
+                        } label: {
+                            VStack(spacing: 0) {
+                                Image(systemName: "magnifyingglass").font(.title2)
+                                Text("Filter").font(.footnote)
+                            }
+                        }
+
+                        // FIXME: closes when the log and the countdown update
+
+                        Menu {
+
+                            Button {
+                                if app.main.nfcReader.isNFCAvailable {
+                                    app.main.nfcReader.taskRequest = .enableStreaming
+                                } else {
+                                    showingNFCAlert = true
+                                }
+                            } label: {
+                                Label {
+                                    Text("RePair Streaming")
+                                } icon: {
+                                    Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18)
+                                }
+                            }
+
+                            Button {
+                                // TODO: allow editing NFC readRaw() ranges
+                                //  app.main.nfcReader.taskRequest = .dump
+                                app.main.log("TODO: dump memory")
+                            } label: {
+                                Label("Dump Memory", systemImage: "memorychip")
+                            }
+                        } label: {
+                            Label {
+                                Text("Tools")
+                            } icon: {
+                                VStack(spacing: 0) {
+                                    Image(systemName: "wrench.and.screwdriver").font(.title3)
+                                    Text("Tools").font(.footnote).fixedSize()
+                                }
+                            }.labelStyle(IconOnlyLabelStyle())
+                        }
+                    }
+                }
+            }
+        }
+        .alert(isPresented: $showingNFCAlert) {
+            Alert(
+                title: Text("NFC not supported"),
+                message: Text("This device doesn't allow scanning the Libre."))
+        }
+        .background(Color.black)
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

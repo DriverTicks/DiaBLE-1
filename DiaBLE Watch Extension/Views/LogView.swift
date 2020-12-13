@@ -42,8 +42,7 @@ struct LogView: View {
                         }.font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
                 }
 
-                // Same as in Monitor
-                if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
+                if (app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...")) && app.main.centralManager.state != .poweredOff {
                     Button {
                         app.main.centralManager.stopScan()
                         app.main.status("Stopped scanning")

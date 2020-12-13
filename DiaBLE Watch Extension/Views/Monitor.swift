@@ -125,7 +125,7 @@ struct Monitor: View {
                 }
                 .frame(height: 16)
 
-                if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
+                if (app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...")) && app.main.centralManager.state != .poweredOff {
                     Spacer()
                     Button {
                         app.main.centralManager.stopScan()

@@ -87,6 +87,8 @@ struct CalibrationInfo: Codable, Equatable {
     var i4: Int = 0
     var i5: Int = 0
     var i6: Int = 0
+
+    static var empty = CalibrationInfo()
 }
 
 

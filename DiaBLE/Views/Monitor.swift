@@ -286,7 +286,7 @@ struct Monitor: View {
                         Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).padding(.bottom, 8).foregroundColor(.accentColor)
                     }
 
-                    if app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...") {
+                    if (app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...")) && app.main.centralManager.state != .poweredOff {
                         Button {
                             app.main.centralManager.stopScan()
                             app.main.status("Stopped scanning")
@@ -302,8 +302,8 @@ struct Monitor: View {
             .multilineTextAlignment(.center)
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle("DiaBLE  \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String)  -  Monitor")
-            .navigationBarItems(
-                trailing:
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         if app.main.nfcReader.isNFCAvailable {
                             app.main.nfcReader.startSession()
@@ -311,14 +311,19 @@ struct Monitor: View {
                             showingNFCAlert = true
                         }
                     } label: {
-                        Image("NFC").renderingMode(.template).resizable().frame(width: 39, height: 27).padding(4)
+                        VStack(spacing: 0) {
+                            // original: .frame(width: 39, height: 27
+                            Image("NFC").renderingMode(.template).resizable().frame(width: 26, height: 18)
+                            Text("Scan").font(.footnote)
+                        }
                     }
                     .alert(isPresented: $showingNFCAlert) {
                         Alert(
                             title: Text("NFC not supported"),
                             message: Text("This device doesn't allow scanning the Libre."))
                     }
-            )
+                }
+            }
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
