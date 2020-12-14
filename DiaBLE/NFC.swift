@@ -113,13 +113,13 @@ import CoreNFC
 
 
 // https://github.com/ivalkou/LibreTools/blob/master/Sources/LibreTools/NFC/NFCManager.swift
+// https://github.com/bubbledevteam/bubble-client-swift/blob/master/BubbleClient/NFCManager.swift
 
-
-// TODO: reimplement using Combine
 
 enum TaskRequest {
     case activate
     case enableStreaming
+    case dump
 }
 
 class NFCReader: NSObject, NFCTagReaderSessionDelegate {
@@ -262,9 +262,30 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
 
                     if self.taskRequest != .none {
 
+                        if self.taskRequest == .dump {
+                            let msg = "NFC: dump of "
+                            self.readRaw(0xF860, 43 * 8) { self.main.log(msg + ($2?.localizedDescription ?? $1.hexDump(address: Int($0), header: "FRAM:")))
+                                self.readRaw(0x1A00, 64) { self.main.log(msg + ($2?.localizedDescription ?? $1.hexDump(address: Int($0), header: "config RAM\n(patchUid at 0x1A08):")))
+                                    self.readRaw(0xFFAC, 36) { self.main.log(msg + ($2?.localizedDescription ?? $1.hexDump(address: Int($0), header: "patch table for A0-A4 E0-E2 commands:")))
+
+                                        // self.writeRaw(0xFFB8, Data([0xE0, 0x00])) { // to restore: Data([0xAB, 0xAB]))
+                                        // TODO: overwrite commands CRC
+                                        // self.main.log("NFC: did write at address: 0x\(String(format: "%04X", $0)), bytes: 0x\($1.hex), error: \($2?.localizedDescription ?? "none")")
+                                        // } // TEST writeRaw
+
+                                        self.taskRequest = .none
+                                        session.invalidate()
+                                    }
+                                }
+                            }
+                            return
+                        }
+
                         if self.sensor.type == .libre2 {
                             let subCmd: Sensor.Subcommand = (self.taskRequest == .enableStreaming) ?
-                                .enableStreaming : .activate
+                                .enableStreaming : (self.taskRequest == .activate) ?
+                                .activate : .unknown0x1a
+
 
                             let currentUnlockCode = self.sensor.unlockCode
                             self.sensor.unlockCode = UInt32(self.main.settings.activeSensorUnlockCode)
@@ -297,7 +318,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
 
                                     if subCmd == .activate && output.count == 4 {
                                         self.main.log("NFC: after trying activating received \(output.hex) for the patch info \(patchInfo.hex)")
-                                        // receiving 9d081000 for a patchInfo 9d0830010000 but state remaining .notActivated
+                                        // receiving 9d081000 for a patchInfo 9d0830010000
                                     }
                                 }
 
@@ -305,6 +326,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                 // session.invalidate()
                             }
                         }
+                        
                     }
 
                     let blocks = 43
@@ -334,9 +356,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
 
                             if i == requests - 1 {
 
-                                if self.main.settings.debugLevel == 0 {
-                                    session.invalidate()
-                                }
+                                session.invalidate()
 
                                 var fram = Data()
 
@@ -350,40 +370,17 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                                         msg += "NFC: block #\(String(format:"%02d", n))  \(data.reduce("", { $0 + String(format: "%02X", $1) + " "}).dropLast())\n"
                                     }
                                 }
-                                if !msg.isEmpty { self.main.log(String(msg.dropLast())) }
+
+                                if !msg.isEmpty {
+                                    self.main.log(String(msg.dropLast()))
+                                }
 
                                 self.main.status("\(self.sensor.type)  +  NFC")
 
-                                if self.main.settings.debugLevel > 0 {
-                                    let msg = "NFC: dump of "
-                                    self.readRaw(0xF860, 43 * 8) { self.main.debugLog(msg + ($2?.localizedDescription ?? $1.hexDump(address: Int($0), header: "FRAM:")))
-                                        self.readRaw(0x1A00, 64) { self.main.debugLog(msg + ($2?.localizedDescription ?? $1.hexDump(address: Int($0), header: "config RAM\n(patchUid at 0x1A08):")))
-                                            self.readRaw(0xFFAC, 36) { self.main.debugLog(msg + ($2?.localizedDescription ?? $1.hexDump(address: Int($0), header: "patch table for A0-A4 E0-E2 commands:")))
-                                                // self.writeRaw(0xFFB8, Data([0xE0, 0x00])) { // to restore: Data([0xAB, 0xAB]))
-                                                // TODO: overwrite commands CRC
-                                                // self.main.debugLog("NFC: did write at address: 0x\(String(format: "%04X", $0)), bytes: 0x\($1.hex), error: \($2?.localizedDescription ?? "none")")
-
-                                                session.invalidate()
-
-                                                // same final code as for debugLevel = 0
-
-                                                if fram.count > 0 {
-                                                    self.sensor.fram = Data(fram)
-                                                }
-                                                self.main.parseSensorData(self.sensor)
-                                                // } // TEST writeRaw
-                                            }
-                                        }
-                                    }
-                                } else {
-
-                                    // same final code as for debugLevel > 0
-
-                                    if fram.count > 0 {
-                                        self.sensor.fram = Data(fram)
-                                    }
-                                    self.main.parseSensorData(self.sensor)
+                                if fram.count > 0 {
+                                    self.sensor.fram = Data(fram)
                                 }
+                                self.main.parseSensorData(self.sensor)
                             }
                         }
                     }

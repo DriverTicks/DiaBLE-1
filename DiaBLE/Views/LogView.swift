@@ -174,9 +174,7 @@ struct LogView: View {
                             }
 
                             Button {
-                                // TODO: allow editing NFC readRaw() ranges
-                                //  app.main.nfcReader.taskRequest = .dump
-                                app.main.log("TODO: dump memory")
+                                app.main.nfcReader.taskRequest = .dump
                             } label: {
                                 Label("Dump Memory", systemImage: "memorychip")
                             }
