@@ -8,6 +8,7 @@ struct Details: View {
     @EnvironmentObject var settings: Settings
 
     @State private var readingCountdown: Int = 0
+    @State private var showingCalibrationInfoForm = false
 
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
@@ -193,7 +194,60 @@ struct Details: View {
                             Text("Calibration Info")
                             Spacer()
                             Text("[\(settings.activeSensorCalibrationInfo.i1), \(settings.activeSensorCalibrationInfo.i2), \(settings.activeSensorCalibrationInfo.i3), \(settings.activeSensorCalibrationInfo.i4), \(settings.activeSensorCalibrationInfo.i5), \(settings.activeSensorCalibrationInfo.i6)]")
-                                .foregroundColor(.yellow)
+                                .foregroundColor(.blue)
+                        }
+                        .onTapGesture {
+                            showingCalibrationInfoForm.toggle()
+                        }
+                        .sheet(isPresented: $showingCalibrationInfoForm) {
+                            Form {
+                                Section(header: Text("Calibration Info")) {
+                                    HStack {
+                                        Text("i1")
+                                        TextField("i1", value: $settings.activeSensorCalibrationInfo.i1,
+                                                  formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
+                                    }
+                                    HStack {
+                                        Text("i2")
+                                        TextField("i2", value: $settings.activeSensorCalibrationInfo.i2,
+                                                  formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
+                                    }
+                                    HStack {
+                                        Text("i3")
+                                        TextField("i3", value: $settings.activeSensorCalibrationInfo.i3,
+                                                  formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
+                                    }
+                                    HStack {
+                                        Text("i4")
+                                        TextField("i4", value: $settings.activeSensorCalibrationInfo.i4,
+                                                  formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
+                                    }
+                                    HStack {
+                                        Text("i5")
+                                        TextField("i5", value: $settings.activeSensorCalibrationInfo.i5,
+                                                  formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
+                                    }
+                                    HStack {
+                                        Text("i6")
+                                        TextField("i6", value: $settings.activeSensorCalibrationInfo.i6,
+                                                  formatter: NumberFormatter()).multilineTextAlignment(.trailing).foregroundColor(.blue)
+                                    }
+                                    HStack {
+                                        Spacer()
+                                        Button {
+                                            showingCalibrationInfoForm = false
+                                        } label: {
+                                            Text("Set").bold().foregroundColor(Color.accentColor).padding(.horizontal, 4).padding(2).overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.accentColor, lineWidth: 2)).animation(.default)
+                                        }.accentColor(.blue)
+                                        Spacer()
+                                    }
+                                }
+                            }
+                            .toolbar {
+                                ToolbarItem(placement: .cancellationAction) {
+                                    Button("Set") { showingCalibrationInfoForm = false }
+                                }
+                            }
                         }
                         HStack {
                             Text("Unlock Code")
