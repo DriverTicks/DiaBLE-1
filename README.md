@@ -23,9 +23,7 @@ Still too early to decide the final design (but I really like already the evil l
 
 The project started as a single script for the iPad Swift Playgrounds to test the workings of the several BLE devices I bought, mainly the **Bubble** and the **MiaoMiao**. It was then quickly converted to an app by using a standard Xcode template: it should compile finely without external dependencies just after changing the _Bundle Identifier_ in the _General_ panel and the _Team_ in the _Signing and Capabilities_ tab of Xcode -- Spike users know already very well what that means... ;)
 
-I am targeting only the latest betas of Xcode. To send the custom NFC commands you have to switch from “Basic” to “Devel” mode in the Log tab and enjoy the verbose flow of debug messages.
-
-Please refer to the [TODOs list](https://github.com/gui-dos/DiaBLE/blob/master/TODO.md) for the up-to-date status of all the current limitations and known bugs of this prototype.
+I am targeting only the latest betas of Xcode. Please refer to the [TODOs list](https://github.com/gui-dos/DiaBLE/blob/master/TODO.md) for the up-to-date status of all the current limitations and known bugs of this prototype.
 
 ---
 Credits: [@bubbledevteam](https://github.com/bubbledevteam?tab=repositories), [@captainbeeheart](https://github.com/captainbeeheart?tab=repositories), [@cryptax](https://github.com/cryptax?tab=repositories), [@dabear](https://github.com/dabear?tab=repositories), [@ivalkou](https://github.com/ivalkou?tab=repositories), [LibreMonitor](https://github.com/UPetersen/LibreMonitor/tree/Swift4), [Loop](https://github.com/LoopKit/Loop), [Nightguard]( https://github.com/nightscout/nightguard), [@travisgoodspeed](https://github.com/travisgoodspeed?tab=repositories), [WoofWoof](https://github.com/gshaviv/ninety-two), [xDrip+](https://github.com/NightscoutFoundation/xDrip), [xDrip4iOS](https://github.com/JohanDegraeve/xdripswift).
