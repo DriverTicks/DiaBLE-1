@@ -27,14 +27,14 @@
 		C55B5D16245FCBE50004FE3B /* OnlineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55B5D15245FCBE50004FE3B /* OnlineView.swift */; };
 		C566341323B14D55001EB5F3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C566341223B14D55001EB5F3 /* Extensions.swift */; };
 		C58507A123C50BF30079539D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C58507A023C50BF30079539D /* Assets.xcassets */; };
-		C58507A823C50BF40079539D /* DiaBLE-Legacy Watch Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C58507A723C50BF40079539D /* DiaBLE-Legacy Watch Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C58507A823C50BF40079539D /* DiaBLE Watch Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = C58507A723C50BF40079539D /* DiaBLE Watch Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C58507AD23C50BF40079539D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58507AC23C50BF40079539D /* ContentView.swift */; };
 		C58507B323C50BF40079539D /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58507B223C50BF40079539D /* NotificationController.swift */; };
 		C58507B523C50BF40079539D /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58507B423C50BF40079539D /* NotificationView.swift */; };
 		C58507B723C50BF40079539D /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58507B623C50BF40079539D /* ComplicationController.swift */; };
 		C58507B923C50BF40079539D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C58507B823C50BF40079539D /* Assets.xcassets */; };
 		C58507BC23C50BF40079539D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C58507BB23C50BF40079539D /* Preview Assets.xcassets */; };
-		C58507C123C50BF40079539D /* DiaBLE-Legacy Watch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = C585079B23C50BF20079539D /* DiaBLE-Legacy Watch.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C58507C123C50BF40079539D /* DiaBLE Watch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = C585079B23C50BF20079539D /* DiaBLE Watch.app */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C5908FB82428E6B600CF6C83 /* alarm_signal_loss.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C5908FB72428E6B600CF6C83 /* alarm_signal_loss.mp3 */; };
 		C5965CC323DCC13300B3C5D8 /* ViewRepresentables.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5965CC223DCC13300B3C5D8 /* ViewRepresentables.swift */; };
 		C597AF6B23AB9E3E0012926C /* NFC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C597AF6A23AB9E3E0012926C /* NFC.swift */; };
@@ -98,7 +98,7 @@
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				C58507C123C50BF40079539D /* DiaBLE-Legacy Watch.app in Embed Watch Content */,
+				C58507C123C50BF40079539D /* DiaBLE Watch.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -109,7 +109,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				C58507A823C50BF40079539D /* DiaBLE-Legacy Watch Extension.appex in Embed App Extensions */,
+				C58507A823C50BF40079539D /* DiaBLE Watch Extension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -135,10 +135,10 @@
 		C55AE3B4245EB1A3009636E0 /* DataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataView.swift; sourceTree = "<group>"; };
 		C55B5D15245FCBE50004FE3B /* OnlineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnlineView.swift; sourceTree = "<group>"; };
 		C566341223B14D55001EB5F3 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		C585079B23C50BF20079539D /* DiaBLE-Legacy Watch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DiaBLE-Legacy Watch.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C585079B23C50BF20079539D /* DiaBLE Watch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DiaBLE Watch.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C58507A023C50BF30079539D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C58507A223C50BF30079539D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C58507A723C50BF40079539D /* DiaBLE-Legacy Watch Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "DiaBLE-Legacy Watch Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C58507A723C50BF40079539D /* DiaBLE Watch Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "DiaBLE Watch Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C58507AC23C50BF40079539D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C58507B223C50BF40079539D /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		C58507B423C50BF40079539D /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
@@ -164,7 +164,7 @@
 		C5DF10F323C783140023E0E2 /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		C5DF10F523C7838A0023E0E2 /* Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Graph.swift; sourceTree = "<group>"; };
 		C5DF10F723C783F90023E0E2 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		C5E1013623A2774C00678DF6 /* DiaBLE-Legacy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DiaBLE-Legacy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C5E1013623A2774C00678DF6 /* DiaBLE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DiaBLE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5E1014023A2774C00678DF6 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C5E1014223A2774D00678DF6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C5E1014523A2774D00678DF6 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -286,9 +286,9 @@
 		C5E1013723A2774C00678DF6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C5E1013623A2774C00678DF6 /* DiaBLE-Legacy.app */,
-				C585079B23C50BF20079539D /* DiaBLE-Legacy Watch.app */,
-				C58507A723C50BF40079539D /* DiaBLE-Legacy Watch Extension.appex */,
+				C5E1013623A2774C00678DF6 /* DiaBLE.app */,
+				C585079B23C50BF20079539D /* DiaBLE Watch.app */,
+				C58507A723C50BF40079539D /* DiaBLE Watch Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -347,9 +347,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C585079A23C50BF20079539D /* DiaBLE-Legacy Watch */ = {
+		C585079A23C50BF20079539D /* DiaBLE Watch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C58507C923C50BF40079539D /* Build configuration list for PBXNativeTarget "DiaBLE-Legacy Watch" */;
+			buildConfigurationList = C58507C923C50BF40079539D /* Build configuration list for PBXNativeTarget "DiaBLE Watch" */;
 			buildPhases = (
 				C585079923C50BF20079539D /* Resources */,
 				C58507C523C50BF40079539D /* Embed App Extensions */,
@@ -359,14 +359,14 @@
 			dependencies = (
 				C58507AA23C50BF40079539D /* PBXTargetDependency */,
 			);
-			name = "DiaBLE-Legacy Watch";
+			name = "DiaBLE Watch";
 			productName = "DiaBLE Watch";
-			productReference = C585079B23C50BF20079539D /* DiaBLE-Legacy Watch.app */;
+			productReference = C585079B23C50BF20079539D /* DiaBLE Watch.app */;
 			productType = "com.apple.product-type.application.watchapp2";
 		};
-		C58507A623C50BF40079539D /* DiaBLE-Legacy Watch Extension */ = {
+		C58507A623C50BF40079539D /* DiaBLE Watch Extension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C58507C823C50BF40079539D /* Build configuration list for PBXNativeTarget "DiaBLE-Legacy Watch Extension" */;
+			buildConfigurationList = C58507C823C50BF40079539D /* Build configuration list for PBXNativeTarget "DiaBLE Watch Extension" */;
 			buildPhases = (
 				C58507A323C50BF40079539D /* Sources */,
 				C58507A423C50BF40079539D /* Frameworks */,
@@ -376,14 +376,14 @@
 			);
 			dependencies = (
 			);
-			name = "DiaBLE-Legacy Watch Extension";
+			name = "DiaBLE Watch Extension";
 			productName = "DiaBLE Watch Extension";
-			productReference = C58507A723C50BF40079539D /* DiaBLE-Legacy Watch Extension.appex */;
+			productReference = C58507A723C50BF40079539D /* DiaBLE Watch Extension.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
-		C5E1013523A2774C00678DF6 /* DiaBLE-Legacy */ = {
+		C5E1013523A2774C00678DF6 /* DiaBLE */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C5E1016323A2774D00678DF6 /* Build configuration list for PBXNativeTarget "DiaBLE-Legacy" */;
+			buildConfigurationList = C5E1016323A2774D00678DF6 /* Build configuration list for PBXNativeTarget "DiaBLE" */;
 			buildPhases = (
 				C5E1013223A2774C00678DF6 /* Sources */,
 				C5E1013323A2774C00678DF6 /* Frameworks */,
@@ -395,9 +395,9 @@
 			dependencies = (
 				C58507C023C50BF40079539D /* PBXTargetDependency */,
 			);
-			name = "DiaBLE-Legacy";
+			name = DiaBLE;
 			productName = DiaBLE;
-			productReference = C5E1013623A2774C00678DF6 /* DiaBLE-Legacy.app */;
+			productReference = C5E1013623A2774C00678DF6 /* DiaBLE.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -434,9 +434,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C5E1013523A2774C00678DF6 /* DiaBLE-Legacy */,
-				C585079A23C50BF20079539D /* DiaBLE-Legacy Watch */,
-				C58507A623C50BF40079539D /* DiaBLE-Legacy Watch Extension */,
+				C5E1013523A2774C00678DF6 /* DiaBLE */,
+				C585079A23C50BF20079539D /* DiaBLE Watch */,
+				C58507A623C50BF40079539D /* DiaBLE Watch Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -547,13 +547,13 @@
 /* Begin PBXTargetDependency section */
 		C58507AA23C50BF40079539D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C58507A623C50BF40079539D /* DiaBLE-Legacy Watch Extension */;
+			target = C58507A623C50BF40079539D /* DiaBLE Watch Extension */;
 			targetProxy = C58507A923C50BF40079539D /* PBXContainerItemProxy */;
 		};
 		C58507C023C50BF40079539D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			platformFilter = ios;
-			target = C585079A23C50BF20079539D /* DiaBLE-Legacy Watch */;
+			target = C585079A23C50BF20079539D /* DiaBLE Watch */;
 			targetProxy = C58507BF23C50BF40079539D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -824,7 +824,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C58507C823C50BF40079539D /* Build configuration list for PBXNativeTarget "DiaBLE-Legacy Watch Extension" */ = {
+		C58507C823C50BF40079539D /* Build configuration list for PBXNativeTarget "DiaBLE Watch Extension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C58507C623C50BF40079539D /* Debug */,
@@ -833,7 +833,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C58507C923C50BF40079539D /* Build configuration list for PBXNativeTarget "DiaBLE-Legacy Watch" */ = {
+		C58507C923C50BF40079539D /* Build configuration list for PBXNativeTarget "DiaBLE Watch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C58507C323C50BF40079539D /* Debug */,
@@ -851,7 +851,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C5E1016323A2774D00678DF6 /* Build configuration list for PBXNativeTarget "DiaBLE-Legacy" */ = {
+		C5E1016323A2774D00678DF6 /* Build configuration list for PBXNativeTarget "DiaBLE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C5E1016423A2774D00678DF6 /* Debug */,
