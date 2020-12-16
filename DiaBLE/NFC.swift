@@ -48,6 +48,7 @@ extension Sensor {
         case unknown0x1c     = 0x1c
         case unknown0x1d     = 0x1d
         case unknown0x1f     = 0x1f
+        // TODO: test
         case readChallenge   = 0x20
         case readBlocks      = 0x21
         case readAttribute   = 0x22
@@ -287,7 +288,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                             self.sensor.unlockCode = UInt32(self.main.settings.activeSensorUnlockCode)
 
                             let cmd = self.sensor.nfcCommand(subCmd)
-                            self.main.debugLog("NFC: sending \(self.sensor.type) command to \(subCmd.description): code: 0x\(String(format: "%0X", cmd.code)), parameters: 0x\(cmd.parameters.hex) (unlock code: \(self.sensor.unlockCode))")
+                            self.main.log("NFC: sending \(self.sensor.type) command to \(subCmd.description): code: 0x\(String(format: "%0X", cmd.code)), parameters: 0x\(cmd.parameters.hex)")
                             self.connectedTag?.customCommand(requestFlags: .highDataRate, customCommandCode: cmd.code, customRequestParameters:  cmd.parameters) { result in
 
                                 switch result {

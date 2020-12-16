@@ -145,15 +145,16 @@ struct LogView: View {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
 
                     HStack(alignment: .bottom) {
-                        Button {
-                            // TODO: filter log.text
-                            app.main.log("TODO: filter history")
-                        } label: {
-                            VStack(spacing: 0) {
-                                Image(systemName: "magnifyingglass").font(.title2)
-                                Text("Filter").font(.footnote)
-                            }
-                        }
+
+                        // TODO: filter log.text
+//                        Button {
+//                            app.main.log("TODO: filter history")
+//                        } label: {
+//                            VStack(spacing: 0) {
+//                                Image(systemName: "magnifyingglass").font(.title2)
+//                                Text("Filter").font(.footnote)
+//                            }
+//                        }
 
                         // FIXME: closes when the log and the countdown update
 
@@ -174,10 +175,26 @@ struct LogView: View {
                             }
 
                             Button {
-                                app.main.nfcReader.taskRequest = .dump
+                                if app.main.nfcReader.isNFCAvailable {
+                                    app.main.nfcReader.taskRequest = .dump
+                                } else {
+                                    showingNFCAlert = true
+                                }
                             } label: {
-                                Label("Dump Memory", systemImage: "memorychip")
+                                Label("Dump Memory", systemImage: "cpu")
                             }
+
+                            // TODO:
+//                            Button {
+//                                if app.main.nfcReader.isNFCAvailable {
+//                                    app.main.nfcReader.taskRequest = .readFRAM
+//                                } else {
+//                                    showingNFCAlert = true
+//                                }
+//                            } label: {
+//                                Label("Read FRAM", systemImage: "memorychip")
+//                            }
+
                         } label: {
                             Label {
                                 Text("Tools")
