@@ -48,11 +48,15 @@ extension Sensor {
         case unknown0x1c     = 0x1c
         case unknown0x1d     = 0x1d
         case unknown0x1f     = 0x1f
+        case readChallenge   = 0x20
+        case readBlocks      = 0x21
+        case readAttribute   = 0x22
 
         var description: String {
             switch self {
             case .activate:        return "activate"
             case .enableStreaming: return "enable BLE streaming"
+            case .readBlocks:      return "read FRAM blocks"
             default:               return "[unknown: 0x\(String(format: "%x", rawValue))]"
             }
         }
@@ -62,6 +66,8 @@ extension Sensor {
     /// The customRequestParameters for 0xA1 are built by appending
     /// code + params (b) + usefulFunction(uid, code, secret (y))
     func nfcCommand(_ code: Subcommand) -> NFCCommand {
+
+        var parameters = Data([code.rawValue])
 
         var b: [UInt8] = []
         var y: UInt16 = 0x1b6a
@@ -83,7 +89,7 @@ extension Sensor {
 
         var parameters = Data([code.rawValue])
 
-        if code == .enableStreaming {
+        if b.count > 0 {
             parameters += b
         }
 
@@ -108,6 +114,7 @@ enum TaskRequest {
     case activate
     case enableStreaming
     case dump
+    case readFRAM
 }
 
 class NFCReader: NSObject, NFCTagReaderSessionDelegate {
@@ -272,7 +279,8 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                         if self.sensor.type == .libre2 {
                             let subCmd: Sensor.Subcommand = (self.taskRequest == .enableStreaming) ?
                                 .enableStreaming : (self.taskRequest == .activate) ?
-                                .activate : .unknown0x1a
+                                .activate : (self.taskRequest == .readFRAM) ?
+                                .readBlocks : .unknown0x1a
 
 
                             let currentUnlockCode = self.sensor.unlockCode
