@@ -6,19 +6,60 @@ struct LogView: View {
     @EnvironmentObject var app: AppState
     @EnvironmentObject var log: Log
     @EnvironmentObject var settings: Settings
-
+    
     @State private var readingCountdown: Int = 0
+
+    @State private var showingSearchField = false
+    @State private var searchString = ""
 
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView(showsIndicators: true) {
-                Text(log.text)
-                    // .font(.system(.footnote, design: .monospaced)).foregroundColor(Color(UIColor.lightGray))
-                    .font(.footnote).foregroundColor(Color(UIColor.lightGray))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+
+            if showingSearchField {
+                HStack {
+                    TextField("Search", text: $searchString)
+                        .foregroundColor(.blue)
+                    Button {
+                        searchString = ""
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                    }
+                    .frame(maxWidth: 24)
+                    .padding(0)
+                    .buttonStyle(PlainButtonStyle())
+                    .foregroundColor(.blue)
+                }
             }
+
+            ScrollView(showsIndicators: true) {
+                if searchString.isEmpty {
+                    Text(log.text)
+
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                } else {
+                    Text(log.text.split(separator: "\n").filter({$0.contains(searchString
+                    )}).joined(separator: ("\n")))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                }
+                // TODO: clear button
+            }
+            // .font(.system(.footnote, design: .monospaced)).foregroundColor(Color(UIColor.lightGray))
+            .font(.footnote).foregroundColor(Color(UIColor.lightGray))
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        withAnimation { showingSearchField.toggle() }
+                    } label: {
+                        Image(systemName: "magnifyingglass").font(.title3)
+                        Text("Filter")
+                    }
+                }
+            }
+            .buttonStyle(PlainButtonStyle())
+            .foregroundColor(.blue)
+
 
             HStack(alignment: .center, spacing: 0) {
 

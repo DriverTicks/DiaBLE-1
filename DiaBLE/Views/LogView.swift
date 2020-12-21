@@ -10,16 +10,44 @@ struct LogView: View {
     @State private var showingNFCAlert = false
     @State private var readingCountdown: Int = 0
 
+    @State private var showingSearchField = false
+    @State private var searchString = ""
+
     let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
 
     var body: some View {
         NavigationView {
             HStack(spacing: 4) {
-                ScrollView(showsIndicators: true) {
-                    Text(log.text)
-                        .font(.system(.footnote, design: .monospaced)).foregroundColor(Color(UIColor.lightGray))
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                        .padding(4)
+
+                VStack {
+
+                    if showingSearchField {
+                        HStack {
+                            TextField("Search", text: $searchString)
+                                .autocapitalization(.none)
+                                .foregroundColor(Color.accentColor)
+                            Button {
+                                searchString = ""
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                            }
+                        }
+                    }
+
+                    ScrollView(showsIndicators: true) {
+                        if searchString.isEmpty {
+                            Text(log.text)
+                                .frame(maxWidth: .infinity, alignment: .topLeading)
+                                .padding(4)
+                        } else {
+                            Text(log.text.split(separator: "\n").filter({$0.contains(searchString
+                            )}).joined(separator: ("\n")))
+                            .frame(maxWidth: .infinity, alignment: .topLeading)
+                            .padding(4)
+                        }
+                        // TODO: clear button
+                    }
+                    .font(.system(.footnote, design: .monospaced)).foregroundColor(Color(UIColor.lightGray))
                 }
 
                 VStack(alignment: .center, spacing: 8) {
@@ -146,15 +174,14 @@ struct LogView: View {
 
                     HStack(alignment: .bottom) {
 
-                        // TODO: filter log.text
-//                        Button {
-//                            app.main.log("TODO: filter history")
-//                        } label: {
-//                            VStack(spacing: 0) {
-//                                Image(systemName: "magnifyingglass").font(.title2)
-//                                Text("Filter").font(.footnote)
-//                            }
-//                        }
+                        Button {
+                            withAnimation { showingSearchField.toggle() }
+                        } label: {
+                            VStack(spacing: 0) {
+                                Image(systemName: "magnifyingglass").font(.title2)
+                                Text("Filter").font(.footnote)
+                            }
+                        }
 
                         // FIXME: closes when the log and the countdown update
 
