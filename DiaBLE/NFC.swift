@@ -88,8 +88,6 @@ extension Sensor {
             y = UInt16(patchInfo[4...5]) ^ UInt16(b[1], b[0])
         }
 
-        var parameters = Data([code.rawValue])
-
         if b.count > 0 {
             parameters += b
         }
@@ -281,7 +279,7 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
                             let subCmd: Sensor.Subcommand = (self.taskRequest == .enableStreaming) ?
                                 .enableStreaming : (self.taskRequest == .activate) ?
                                 .activate : (self.taskRequest == .readFRAM) ?
-                                .readBlocks : .unknown0x1a
+                                .readBlocks : .readAttribute
 
 
                             let currentUnlockCode = self.sensor.unlockCode
@@ -410,11 +408,11 @@ class NFCReader: NSObject, NFCTagReaderSessionDelegate {
         if bytes % 2 == 1 || ( bytes % 2 == 0 && addressToRead % 2 == 1 ) { remainingWords += 1 }
         let wordsToRead = UInt8(remainingWords > 12 ? 12 : remainingWords)    // real limit is 15
 
-        var readRawCommand = NFCCommand(code: 0xA3, parameters: self.sensor.backdoor + [UInt8(addressToRead & 0x00FF), UInt8(addressToRead >> 8), wordsToRead])
+        var readRawCommand = NFCCommand(code: 0xA3, parameters: self.sensor.backdoor + [UInt8(addressToRead & 0xFF), UInt8(addressToRead >> 8), wordsToRead])
 
         if sensor.type == .libre2 {
             // TODO encode parameters
-            readRawCommand = NFCCommand(code: 0xB3, parameters: Data([UInt8(addressToRead & 0x00FF), UInt8(addressToRead >> 8), wordsToRead]))
+            readRawCommand = NFCCommand(code: 0xB3, parameters: Data([UInt8(addressToRead & 0xFF), UInt8(addressToRead >> 8), wordsToRead]))
         }
 
         if buffer.count == 0 { self.main.debugLog("NFC: sending 0x\(String(format: "%0x", readRawCommand.code)) 0x07 0x\(readRawCommand.parameters.hex) command (\(sensor.type) read raw)") }

@@ -251,40 +251,46 @@ class Libre: Transmitter {
                     let readingDate = trend[0].date
                     let historyDelay = 2
 
-                    var rawTrend = [Glucose](main.history.rawTrend.filter { $0.value != -1 })
-                    let rawTrendIds = rawTrend.map { $0.id }
-                    rawTrend += bleGlucose.prefix(7).filter { !rawTrendIds.contains($0.id) }
-                    rawTrend = [Glucose](rawTrend.sorted(by: { $0.id > $1.id }).prefix(16))
-
-                    // Set glucose values to -1 for missing ids
-                    var j = rawTrend.count - 1
-                    for i in 0 ..< 16 {
-                        let id = wearTimeMinutes - 15 + i
-                        let date = readingDate - Double((15 - i) * 60)
-                        if rawTrend[j].id > id {
-                            rawTrend.insert(Glucose(-1, id: id, date: date), at: j + 1)
-                        } else if rawTrend[j].id < id {
-                            while rawTrend[j].id < id {
-                                j -= 1
-                                if rawTrend[j].id > id {
-                                    rawTrend.insert(Glucose(-1, id: id, date: date), at: j + 1)
-                                }
-                            }
-                        } else  {
-                            j -= 1
+                    // Merge trend values setting them to -1 for missing ids
+                    var trendDict = [Int: Glucose]()
+                    for i in 0 ... 15 {
+                        let id = wearTimeMinutes - i
+                        let date = readingDate - Double(i * 60)
+                        trendDict[id] = Glucose(-1, id: id, date: date)
+                    }
+                    var rawTrend = [Glucose](main.history.rawTrend)
+                    for glucose in (rawTrend + bleGlucose.prefix(7)) {
+                        if glucose.id > wearTimeMinutes - 16 {
+                            trendDict[glucose.id] = glucose
                         }
                     }
-                    rawTrend = [Glucose](rawTrend.prefix(16))
+                    rawTrend = [Glucose](trendDict.values.sorted(by: { $0.id > $1.id }).prefix(16))
                     main.history.rawTrend = rawTrend
                     main.history.factoryTrend = rawTrend.map { factoryGlucose(raw: $0, calibrationInfo: main.settings.activeSensorCalibrationInfo) }
                     main.log("BLE merged trend: \(main.history.factoryTrend.map{$0.value})")
 
                     // TODO: compute delta and update trend arrow
 
+                    // Merge historic values setting them to -1 for missing ids
+                    var historyDict = [Int: Glucose]()
+                    let lastHistoryId = history[0].id
+                    let lastHistoryDate = history[0].date
+                    for i in 0 ... 31 {
+                        let id = lastHistoryId - i * 15
+                        let date = lastHistoryDate - Double(i * (60 * 15))
+                        historyDict[id] = Glucose(-1, id: id, date: date)
+                    }
                     var rawValues = [Glucose](main.history.rawValues)
-                    let rawValuesIds = rawValues.map { $0.id }
-                    rawValues += bleGlucose.suffix(3).filter { !rawValuesIds.contains($0.id) }
-                    rawValues = [Glucose](rawValues.sorted(by: { $0.id > $1.id }).prefix(32))
+                    for glucose in (rawValues + bleGlucose.suffix(3)) {
+                        if glucose.id > lastHistoryId - (32 * 15) {
+                            historyDict[glucose.id] = glucose
+                        }
+                    }
+                    rawValues = [Glucose](historyDict.values
+                                            .sorted(by: { $0.id < $1.id })
+                                            .drop(while: { $0.value == -1 })
+                                            .reversed()
+                                            .prefix(32))
                     main.history.rawValues = rawValues
                     main.history.factoryValues = rawValues.map { factoryGlucose(raw: $0, calibrationInfo: main.settings.activeSensorCalibrationInfo) }
                     main.log("BLE merged history: \(main.history.factoryValues.map{$0.value})")
