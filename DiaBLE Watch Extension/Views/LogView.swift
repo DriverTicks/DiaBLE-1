@@ -21,15 +21,17 @@ struct LogView: View {
                 HStack {
                     TextField("Search", text: $searchString)
                         .foregroundColor(.blue)
-                    Button {
-                        searchString = ""
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
+                    if searchString.count > 0 {
+                        Button {
+                            searchString = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                        }
+                        .frame(maxWidth: 24)
+                        .padding(0)
+                        .buttonStyle(PlainButtonStyle())
+                        .foregroundColor(.blue)
                     }
-                    .frame(maxWidth: 24)
-                    .padding(0)
-                    .buttonStyle(PlainButtonStyle())
-                    .foregroundColor(.blue)
                 }
             }
 
