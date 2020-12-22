@@ -25,14 +25,16 @@ struct LogView: View {
 
                     if showingSearchField {
                         HStack {
+                            Image(systemName: "magnifyingglass").padding(.leading).foregroundColor(Color(UIColor.lightGray))
                             TextField("Search", text: $searchString)
                                 .autocapitalization(.none)
+                                .padding(.vertical)
                                 .foregroundColor(Color.accentColor)
                             if searchString.count > 0 {
                                 Button {
                                     searchString = ""
                                 } label: {
-                                    Image(systemName: "xmark.circle.fill")
+                                    Image(systemName: "xmark.circle.fill").padding(.trailing)
                                 }
                             }
                         }
@@ -51,7 +53,6 @@ struct LogView: View {
                                 .frame(maxWidth: .infinity, alignment: .topLeading)
                                 .padding(4)
                             }
-                            // TODO: clear button
                         }
                         .font(.system(.footnote, design: .monospaced)).foregroundColor(Color(UIColor.lightGray))
 
@@ -185,7 +186,7 @@ struct LogView: View {
                             withAnimation { showingSearchField.toggle() }
                         } label: {
                             VStack(spacing: 0) {
-                                Image(systemName: "magnifyingglass").font(.title2)
+                                Image(systemName: searchString.isEmpty ? "line.horizontal.3.decrease.circle" : "line.horizontal.3.decrease.circle.fill").font(.title2)
                                 Text("Filter").font(.footnote)
                             }
                         }

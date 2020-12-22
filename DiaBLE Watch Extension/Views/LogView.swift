@@ -6,7 +6,7 @@ struct LogView: View {
     @EnvironmentObject var app: AppState
     @EnvironmentObject var log: Log
     @EnvironmentObject var settings: Settings
-    
+
     @State private var readingCountdown: Int = 0
 
     @State private var showingSearchField = false
@@ -19,6 +19,7 @@ struct LogView: View {
 
             if showingSearchField {
                 HStack {
+                    Image(systemName: "magnifyingglass").foregroundColor(Color(UIColor.lightGray))
                     TextField("Search", text: $searchString)
                         .foregroundColor(.blue)
                     if searchString.count > 0 {
@@ -38,14 +39,12 @@ struct LogView: View {
             ScrollView(showsIndicators: true) {
                 if searchString.isEmpty {
                     Text(log.text)
-
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 } else {
                     Text(log.text.split(separator: "\n").filter({$0.contains(searchString
                     )}).joined(separator: ("\n")))
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
-                // TODO: clear button
             }
             // .font(.system(.footnote, design: .monospaced)).foregroundColor(Color(UIColor.lightGray))
             .font(.footnote).foregroundColor(Color(UIColor.lightGray))
@@ -54,7 +53,7 @@ struct LogView: View {
                     Button {
                         withAnimation { showingSearchField.toggle() }
                     } label: {
-                        Image(systemName: "magnifyingglass").font(.title3)
+                        Image(systemName: searchString.isEmpty ? "line.horizontal.3.decrease.circle" : "line.horizontal.3.decrease.circle.fill").font(.title3)
                         Text("Filter")
                     }
                 }
