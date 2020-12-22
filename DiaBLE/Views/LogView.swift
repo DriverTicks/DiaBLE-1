@@ -51,7 +51,7 @@ struct LogView: View {
                                     .frame(maxWidth: .infinity, alignment: .topLeading)
                                     .padding(4)
                             } else {
-                                Text(log.text.split(separator: "\n").filter({$0.contains(searchString
+                                Text(log.text.split(separator: "\n").filter({$0.lowercased().contains(searchString.lowercased()
                                 )}).joined(separator: ("\n")))
                                 .frame(maxWidth: .infinity, alignment: .topLeading)
                                 .padding(4)

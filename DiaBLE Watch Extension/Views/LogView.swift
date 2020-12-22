@@ -41,7 +41,7 @@ struct LogView: View {
                     Text(log.text)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 } else {
-                    Text(log.text.split(separator: "\n").filter({$0.contains(searchString
+                    Text(log.text.split(separator: "\n").filter({$0.lowercased().contains(searchString.lowercased()
                     )}).joined(separator: ("\n")))
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 }
@@ -90,7 +90,7 @@ struct LogView: View {
                         app.main.status("Stopped scanning")
                         app.main.log("Bluetooth: stopped scanning")
                     } label: {
-                        Image(systemName: "stop.circle").resizable().frame(width: 24, height: 24).foregroundColor(.blue)
+                        Image(systemName: "stop.circle").resizable().frame(width: 24, height: 24).foregroundColor(.red)
                     }
                 }
 
