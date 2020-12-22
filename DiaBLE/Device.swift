@@ -339,7 +339,7 @@ class Libre: Transmitter {
         var bleGlucose: [Glucose] = []
         let wearTimeMinutes = UInt16(data[40...41])
         if sensor!.state == .unknown { sensor!.state = .active }
-        if sensor!.age == 0 {sensor!.age = Int(wearTimeMinutes) }
+        sensor!.age = Int(wearTimeMinutes)
         let startDate = sensor!.lastReadingDate - Double(wearTimeMinutes) * 60
         let delay = 2
         for i in 0 ..< 10 {
