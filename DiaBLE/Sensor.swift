@@ -240,7 +240,7 @@ class Sensor: ObservableObject {
 
     func updateCRCReport() {
         if fram.count != 344 {
-            crcReport = "No FRAM read: can't verify CRC"
+            crcReport = "NFC: FRAM read did not complete: can't verify CRC"
 
         } else {
             let headerCRC = UInt16(fram[0...1])

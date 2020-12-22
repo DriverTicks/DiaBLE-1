@@ -267,7 +267,7 @@ class Libre: Transmitter {
                     rawTrend = [Glucose](trendDict.values.sorted(by: { $0.id > $1.id }).prefix(16))
                     main.history.rawTrend = rawTrend
                     main.history.factoryTrend = rawTrend.map { factoryGlucose(raw: $0, calibrationInfo: main.settings.activeSensorCalibrationInfo) }
-                    main.log("BLE merged trend: \(main.history.factoryTrend.map{$0.value})")
+                    main.log("BLE merged trend: \(main.history.factoryTrend.map{$0.value})".replacingOccurrences(of: "-1", with: "… "))
 
                     // TODO: compute delta and update trend arrow
 
@@ -293,7 +293,7 @@ class Libre: Transmitter {
                                             .prefix(32))
                     main.history.rawValues = rawValues
                     main.history.factoryValues = rawValues.map { factoryGlucose(raw: $0, calibrationInfo: main.settings.activeSensorCalibrationInfo) }
-                    main.log("BLE merged history: \(main.history.factoryValues.map{$0.value})")
+                    main.log("BLE merged history: \(main.history.factoryValues.map{$0.value})".replacingOccurrences(of: "-1", with: "… "))
 
                     // TODO: apply the following also after a NFC scan
 

@@ -292,7 +292,7 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
             var fram = sensor.encryptedFram.count > 0 ? sensor.encryptedFram : sensor.fram
 
             guard fram.count >= 344 else {
-                log("Partially scanned FRAM (\(fram.count)/344): cannot proceed to OOP")
+                log("NFC: partially scanned FRAM (\(fram.count)/344): cannot proceed to OOP")
                 return
             }
 
@@ -444,12 +444,15 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
             let entries = (self.history.values + [Glucose(currentGlucose, date: sensor.lastReadingDate, source: "DiaBLE")]).filter{ $0.value > 0 }
 
             // TODO
-            healthKit?.write(entries.filter{$0.date > healthKit?.lastDate ?? Calendar.current.date(byAdding: .hour, value: -8, to: Date())!})
+            healthKit?.write(entries.filter { $0.date > healthKit?.lastDate ?? Calendar.current.date(byAdding: .hour, value: -8, to: Date())! })
             healthKit?.read()
 
-            // FIXME: dont't delete if older then 8 hours
-            nightscout?.delete(query: "find[device]=OOP&count=32") { data, response, error in
-                self.nightscout?.post(entries: entries) { data, response, error in
+            // TODO
+            // nightscout?.delete(query: "find[device]=OOP&count=32") { data, response, error in
+
+            nightscout?.read() { values in
+                self.nightscout?.post(entries: entries.filter { $0.date > values[0].date }) {
+                    data, response, error in
                     self.nightscout?.read()
                 }
             }

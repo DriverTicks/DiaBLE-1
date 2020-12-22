@@ -35,7 +35,8 @@ class Nightscout: NSObject {
             main.debugLog("Nightscout: URL request: \(request.url!.absoluteString)")
             request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
             URLSession.shared.dataTask(with: request) { data, response, error in
-                if let data = data { self.main.debugLog("Nightscout: response data: \(data.string)")
+                if let data = data {
+                    self.main.debugLog("Nightscout: response data: \(data.string)")
                     if let json = try? JSONSerialization.jsonObject(with: data) {
                         if let array = json as? [Any] {
                             DispatchQueue.main.async {
