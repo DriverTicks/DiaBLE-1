@@ -28,7 +28,7 @@ struct LogView: View {
                             Image(systemName: "magnifyingglass").padding(.leading).foregroundColor(Color(UIColor.lightGray))
                             TextField("Search", text: $searchString)
                                 .autocapitalization(.none)
-                                .padding(.vertical)
+                                .padding(.vertical, 8)
                                 .foregroundColor(Color.accentColor)
                             if searchString.count > 0 {
                                 Button {
@@ -38,6 +38,9 @@ struct LogView: View {
                                 }
                             }
                         }
+                        .background(Color(UIColor.secondarySystemBackground))
+                        .cornerRadius(10)
+                        .padding()
                     }
 
                     HStack(spacing: 4) {
