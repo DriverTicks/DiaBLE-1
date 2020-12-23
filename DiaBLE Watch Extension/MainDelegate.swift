@@ -442,7 +442,12 @@ public class MainDelegate: NSObject, WKExtendedRuntimeSessionDelegate {
             if settings.calibrating {
                 entries += self.history.calibratedValues + history.calibratedTrend
             } else {
-                entries += self.history.values + history.factoryTrend.dropFirst() + [Glucose(currentGlucose, date: sensor.lastReadingDate)]
+                if history.values.count > 0 {
+                    entries += self.history.values
+                } else {
+                    entries += self.history.factoryValues
+                }
+                entries += history.factoryTrend.dropFirst() + [Glucose(currentGlucose, date: sensor.lastReadingDate)]
             }
             entries = entries.filter{ $0.value > 0 && $0.id > -1 }
 
