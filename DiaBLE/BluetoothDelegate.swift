@@ -70,15 +70,19 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
             }
         }
 
-        if (didFindATransmitter && !settings.preferredDevicePattern.isEmpty && !name!.matches(settings.preferredDevicePattern))
-            || !didFindATransmitter && (settings.preferredTransmitter != .none || (!settings.preferredDevicePattern.isEmpty && !name!.matches(settings.preferredDevicePattern))) {
+        if advertisement[CBAdvertisementDataIsConnectable] as? Int == 0
+            || (didFindATransmitter && !settings.preferredDevicePattern.isEmpty && !name!.matches(settings.preferredDevicePattern))
+            || (!didFindATransmitter && (settings.preferredTransmitter != .none || (!settings.preferredDevicePattern.isEmpty && !name!.matches(settings.preferredDevicePattern)))) {
             var scanningFor = "Scanning"
             if !settings.preferredDevicePattern.isEmpty {
                 scanningFor += " for '\(settings.preferredDevicePattern)'"
             }
             main.status("\(scanningFor)...\nSkipping \(name!)...")
-            log("Bluetooth: \(scanningFor.lowercased()), skipping \(name!)")
-
+            var msg = "Bluetooth: \(scanningFor.lowercased()), skipping \(name!)"
+            if advertisement[CBAdvertisementDataIsConnectable] as? Int == 0 && (settings.preferredDevicePattern.isEmpty || (!settings.preferredDevicePattern.isEmpty && name!.matches(settings.preferredDevicePattern))) {
+                msg += (" because not connectable")
+            }
+            log(msg)
             return
         }
 
@@ -446,6 +450,9 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
         } else {
 
             log("\(msg) string: \"\(data.string)\"")
+
+
+            if app.device == nil { return }     // the connection timed out in the meantime
 
             app.lastReadingDate = Date()
 
