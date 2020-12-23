@@ -53,7 +53,7 @@ struct Glucose: Identifiable, Codable {
         self.init(raw: raw, rawTemperature: rawTemperature, calibration: calibration, id: id, date: date)
     }
 
-    init(_ value: Int, temperature: Double = 0, id: Int = 0, date: Date = Date(), source: String = "") {
+    init(_ value: Int, temperature: Double = 0, id: Int = 0, date: Date = Date(), source: String = "DiaBLE") {
         self.init(raw: value * 10, id: id, date: date)
         self.temperature = temperature
         self.source = source
