@@ -32,7 +32,7 @@ struct Glucose: Identifiable, Codable {
             value = Int(round(slope * Double(raw) + offset))
         }
     }
-    var source: String = ""
+    var source: String = "DiaBLE"
 
     init(raw: Int, rawTemperature: Int = 0, temperatureAdjustment: Int = 0, calibration: Calibration? = nil, id: Int = 0, date: Date = Date(), hasError: Bool = false, error: Int = 0) {
         self.id = id
