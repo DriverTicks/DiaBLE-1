@@ -461,7 +461,13 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
         eventKit?.sync()
 
         if history.values.count > 0 || history.factoryValues.count > 0 {
-            let entries = (self.history.values + history.factoryTrend).filter{ $0.value > 0 && $0.id > -1 }
+            var entries = [Glucose]()
+            if settings.calibrating {
+                entries += self.history.calibratedValues + history.calibratedTrend
+            } else {
+                entries += self.history.values + history.factoryTrend.dropFirst() + [Glucose(currentGlucose, date: sensor.lastReadingDate)]
+            }
+            entries = entries.filter{ $0.value > 0 && $0.id > -1 }
 
             // TODO
             healthKit?.write(entries.filter { $0.date > healthKit?.lastDate ?? Calendar.current.date(byAdding: .hour, value: -8, to: Date())! })
