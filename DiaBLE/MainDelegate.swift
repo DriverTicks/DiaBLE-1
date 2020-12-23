@@ -240,8 +240,7 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
                 self.debugLog("OOP: query parameters: \(queryItems)")
                 if let data = data {
                     self.log("OOP: server calibration response: \(data.string)")
-                    let decoder = JSONDecoder()
-                    if let oopCalibration = try? decoder.decode(OOPCalibrationResponse.self, from: data) {
+                    if let oopCalibration = try? JSONDecoder().decode(OOPCalibrationResponse.self, from: data) {
                         if oopCalibration.parameters.offsetOffset == -2.0 &&
                             oopCalibration.parameters.slopeSlope  == 0.0 &&
                             oopCalibration.parameters.slopeOffset == 0.0 &&
@@ -301,8 +300,7 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
                     self.debugLog("OOP: query parameters: \(queryItems)")
                     if let data = data {
                         self.debugLog("OOP: server activation response: \(data.string)")
-                        let decoder = JSONDecoder()
-                        if let oopActivationResponse = try? decoder.decode(GlucoseSpaceActivationResponse.self, from: data) {
+                        if let oopActivationResponse = try? JSONDecoder().decode(GlucoseSpaceActivationResponse.self, from: data) {
                             self.debugLog("OOP: activation response: \(oopActivationResponse), activation command: 0x\(String(format: "%2X", UInt8(Int16(oopActivationResponse.activationCommand) & 0xFF)))")
                         }
                         if sensor.type == .libre2 {
@@ -334,8 +332,7 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
                         self.errorStatus("OOP history error: \(data.string)")
                         self.history.values = []
                     } else {
-                        let decoder = JSONDecoder()
-                        if let oopData = try? decoder.decode(GlucoseSpaceHistoryResponse.self, from: data) {
+                        if let oopData = try? JSONDecoder().decode(GlucoseSpaceHistoryResponse.self, from: data) {
                             let realTimeGlucose = oopData.realTimeGlucose.value
                             if realTimeGlucose > 0 && !self.settings.calibrating {
                                 sensor.currentGlucose = realTimeGlucose
@@ -354,13 +351,13 @@ public class MainDelegate: UIResponder, UIApplicationDelegate, UIWindowSceneDele
                             }
                             if oopHistoryCount > 0 {
                                 if oopHistoryCount < 32 { // new sensor
-                                    oopHistory.append(contentsOf: [Glucose](repeating: Glucose(-1), count: 32 - oopHistoryCount))
+                                    oopHistory.append(contentsOf: [Glucose](repeating: Glucose(-1, date: self.app.lastReadingDate - Double(sensor.age) * 60), count: 32 - oopHistoryCount))
                                 }
                                 self.history.values = oopHistory
                             } else {
                                 self.history.values = []
                             }
-                            self.log("OOP: history values: \(oopHistory.map{ $0.value })")
+                            self.log("OOP: history values: \(oopHistory.map{ $0.value })".replacingOccurrences(of: "-1", with: "… "))
                         } else {
                             self.log("OOP: error while decoding JSON data")
                             self.errorStatus("OOP server error: \(data.string)")

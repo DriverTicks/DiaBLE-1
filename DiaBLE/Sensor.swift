@@ -208,7 +208,7 @@ class Sensor: ObservableObject {
                 let negativeAdjustment = readBits(fram, offset, 0x2f, 0x1)
                 if negativeAdjustment != 0 { temperatureAdjustment = -temperatureAdjustment }
                 let id = age - delay - i * 15
-                let date = readingDate - Double(i) * 15 * 60
+                let date = id > -1 ? readingDate - Double(i) * 15 * 60 : startDate
                 history.append(Glucose(raw: raw, rawTemperature: temperature, temperatureAdjustment: temperatureAdjustment, id: id, date: date, hasError: hasError, error: Int(error)))
             }
         }
