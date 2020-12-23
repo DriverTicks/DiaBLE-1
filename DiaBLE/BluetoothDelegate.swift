@@ -168,7 +168,10 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         let name = peripheral.name ?? "unnamed peripheral"
-        if app.device.name == "Unnamed peripheral" && name != "unnamed peripheral" { app.device.name = name }
+        if app.device.name == "Unnamed peripheral" && name != "unnamed peripheral" {
+            app.device.name = name
+            main.status("\(app.device.name)")
+        }
         app.device.state = peripheral.state
         if let services = peripheral.services {
             for service in services {
