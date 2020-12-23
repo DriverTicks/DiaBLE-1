@@ -101,7 +101,7 @@ class Sensor: ObservableObject {
     @Published var transmitter: Transmitter?
     @Published var state: SensorState = .unknown
     @Published var currentGlucose: Int = 0
-    @Published var lastReadingDate = Date()
+    @Published var lastReadingDate = Date.distantPast
     @Published var age: Int = 0
     @Published var maxLife: Int = 0
     @Published var initializations: Int = 0

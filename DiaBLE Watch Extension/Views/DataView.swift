@@ -18,14 +18,12 @@ struct DataView: View {
             Text(Date().dateTime)
                 .foregroundColor(.white)
 
-            if app.deviceState == "Connected" {
-                Text(readingCountdown > 0 || app.status.hasSuffix("sensor") ?
+            Text(readingCountdown > 0 ?
                     "\(readingCountdown) s" : "")
-                    .fixedSize()
-                    .onReceive(timer) { _ in
-                        readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
-                    }.font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
-            }
+                .fixedSize()
+                .onReceive(timer) { _ in
+                    readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
+                }.font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
 
             HStack {
 

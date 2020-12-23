@@ -273,7 +273,7 @@ struct Details: View {
                     HStack {
                         Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 24, height: 24)
                             .foregroundColor(.blue)
-                        Text(app.deviceState == "Connected" && (readingCountdown > 0 || app.status.hasSuffix("sensor")) ?
+                        Text(app.deviceState == "Connected" && readingCountdown > 0 ?
                                 "\(readingCountdown) s" : "...")
                             .fixedSize()
                             .onReceive(timer) { _ in

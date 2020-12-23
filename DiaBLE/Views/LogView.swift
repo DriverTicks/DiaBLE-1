@@ -99,16 +99,12 @@ struct LogView: View {
                                     .hidden()
                             }
 
-                            if app.deviceState == "Connected" {
-                                Text(readingCountdown > 0 || app.status.hasSuffix("sensor") ?
-                                        "\(readingCountdown) s" : "")
-                                    .fixedSize()
-                                    .onReceive(timer) { _ in
-                                        readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
-                                    }.font(Font.caption.monospacedDigit()).foregroundColor(.orange)
-                            } else {
-                                Text("").fixedSize().font(Font.caption.monospacedDigit()).hidden()
-                            }
+                            Text(app.deviceState == "Connected" && readingCountdown > 0 ?
+                                    "\(readingCountdown) s" : "")
+                                .fixedSize()
+                                .onReceive(timer) { _ in
+                                    readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
+                                }.font(Font.caption.monospacedDigit()).foregroundColor(.orange)
 
                             Spacer()
 

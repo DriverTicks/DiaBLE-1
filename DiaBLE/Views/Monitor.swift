@@ -29,12 +29,16 @@ struct Monitor: View {
                 }
 
                 VStack {
+
                     HStack {
+
                         VStack {
-
-                            Text(app.lastReadingDate.shortTime)
-                            Text("\(Int(Date().timeIntervalSince(app.lastReadingDate)/60)) min ago").font(.footnote)
-
+                            if app.lastReadingDate != Date.distantPast {
+                                Text(app.lastReadingDate.shortTime)
+                                Text("\(Int(Date().timeIntervalSince(app.lastReadingDate)/60)) min ago").font(.footnote)
+                            } else {
+                                Text("---")
+                            }
                         }.frame(maxWidth: .infinity, alignment: .trailing ).padding(.trailing, 12).foregroundColor(Color(UIColor.lightGray))
 
                         // currentGlucose is negative when set to the last trend raw value (no online connection or calibration)
@@ -61,8 +65,7 @@ struct Monitor: View {
                             .fixedSize()
 
                         if app.deviceState == "Connected" {
-
-                            Text(readingCountdown > 0 || app.status.hasSuffix("sensor") ?
+                            Text(readingCountdown > 0 ?
                                     "\(readingCountdown) s" : "")
                                 .fixedSize()
                                 .onReceive(timer) { _ in

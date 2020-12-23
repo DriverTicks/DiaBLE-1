@@ -45,7 +45,7 @@ class AppState: ObservableObject {
     @AppStorage("selectedTab") var selectedTab: Tab = .monitor
 
     @Published var currentGlucose: Int = 0
-    @Published var lastReadingDate: Date = Date()
+    @Published var lastReadingDate: Date = Date.distantPast
     @Published var oopAlarm: String = ""
     @Published var oopTrend: String = ""
 

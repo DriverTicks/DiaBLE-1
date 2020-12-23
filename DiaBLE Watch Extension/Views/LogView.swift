@@ -75,14 +75,12 @@ struct LogView: View {
                     }
                 }.foregroundColor(.blue)
 
-                if app.deviceState == "Connected" {
-                    Text(readingCountdown > 0 || app.status.hasSuffix("sensor") ?
-                            "\(readingCountdown) s" : "")
-                        .fixedSize()
-                        .onReceive(timer) { _ in
-                            readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
-                        }.font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
-                }
+                Text(app.deviceState == "Connected" && readingCountdown > 0 ?
+                        "\(readingCountdown) s" : "")
+                    .fixedSize()
+                    .onReceive(timer) { _ in
+                        readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
+                    }.font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
 
                 if (app.status.hasPrefix("Scanning") || app.status.hasSuffix("retrying...")) && app.main.centralManager.state != .poweredOff {
                     Button {

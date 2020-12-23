@@ -41,7 +41,7 @@ struct OnlineView: View {
                                 Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).foregroundColor(.accentColor)
                             }
 
-                            Text(app.deviceState == "Connected" && (readingCountdown > 0 || app.status.hasSuffix("sensor")) ?
+                            Text(app.deviceState == "Connected" && readingCountdown > 0 ?
                                     "\(readingCountdown) s" : "...")
                                 .fixedSize()
                                 .onReceive(timer) { _ in

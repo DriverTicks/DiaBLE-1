@@ -117,7 +117,7 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
 
         } else {
             app.device = Device(peripheral: peripheral, main: main)
-            app.device.name = name!
+            app.device.name = name!.replacingOccurrences(of: "an unnamed", with: "Unnamed")
         }
 
         app.device.rssi = Int(truncating: rssi)
@@ -168,7 +168,7 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
 
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         let name = peripheral.name ?? "unnamed peripheral"
-        if app.device.name == "an unnamed peripheral" && name != "unnamed peripheral" { app.device.name = name }
+        if app.device.name == "Unnamed peripheral" && name != "unnamed peripheral" { app.device.name = name }
         app.device.state = peripheral.state
         if let services = peripheral.services {
             for service in services {
@@ -454,7 +454,9 @@ class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegat
 
             if app.device == nil { return }     // the connection timed out in the meantime
 
-            app.lastReadingDate = Date()
+            if app.transmitter != nil {
+                app.lastReadingDate = Date()
+            }
 
             app.device.read(data, for: characteristic.uuid.uuidString)
 
