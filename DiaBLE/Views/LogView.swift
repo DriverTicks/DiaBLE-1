@@ -99,12 +99,17 @@ struct LogView: View {
                                     .hidden()
                             }
 
-                            Text(app.deviceState == "Connected" && readingCountdown > 0 ?
-                                    "\(readingCountdown) s" : "")
-                                .fixedSize()
-                                .onReceive(timer) { _ in
-                                    readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
-                                }.font(Font.caption.monospacedDigit()).foregroundColor(.orange)
+                            if !app.deviceState.isEmpty && app.deviceState != "Disconnected" {
+                                Text(readingCountdown > 0 ?
+                                        "\(readingCountdown) s" : "")
+                                    .fixedSize()
+                                    .font(Font.caption.monospacedDigit()).foregroundColor(.orange)
+                                    .onReceive(timer) { _ in
+                                        readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
+                                    }
+                            } else {
+                                Text("").fixedSize().font(Font.caption.monospacedDigit()).hidden()
+                            }
 
                             Spacer()
 

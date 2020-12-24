@@ -21,9 +21,10 @@ struct DataView: View {
             Text(readingCountdown > 0 ?
                     "\(readingCountdown) s" : "")
                 .fixedSize()
+                .font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
                 .onReceive(timer) { _ in
                     readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
-                }.font(Font.footnote.monospacedDigit()).foregroundColor(.orange)
+                }
 
             HStack {
 

@@ -303,12 +303,14 @@ struct Details: View {
                     Image(systemName: "arrow.clockwise.circle").resizable().frame(width: 32, height: 32).foregroundColor(.accentColor)
                 }
 
-                Text(app.deviceState == "Connected" && readingCountdown > 0 ?
+                Text(!app.deviceState.isEmpty && app.deviceState != "Disconnected" && readingCountdown > 0 ?
                         "\(readingCountdown) s" : "...")
                     .fixedSize()
+                    .foregroundColor(.orange).font(Font.caption.monospacedDigit())
                     .onReceive(timer) { _ in
                         readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
-                    }.foregroundColor(.orange).font(Font.caption.monospacedDigit())
+                    }
+
             }.padding(.bottom, 8)
 
             .navigationBarTitleDisplayMode(.inline)

@@ -64,13 +64,14 @@ struct Monitor: View {
                             .foregroundColor(app.deviceState == "Connected" ? .green : .red)
                             .fixedSize()
 
-                        if app.deviceState == "Connected" {
+                        if !app.deviceState.isEmpty && app.deviceState != "Disconnected" {
                             Text(readingCountdown > 0 ?
                                     "\(readingCountdown) s" : "")
                                 .fixedSize()
+                                .font(Font.callout.monospacedDigit()).foregroundColor(.orange)
                                 .onReceive(timer) { _ in
                                     readingCountdown = settings.readingInterval * 60 - Int(Date().timeIntervalSince(app.lastReadingDate))
-                                }.font(Font.callout.monospacedDigit()).foregroundColor(.orange)
+                                }
                         }
                     }
                 }
