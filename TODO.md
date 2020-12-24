@@ -11,7 +11,7 @@ FIXME
 TODO
 ----
 
-* clean the code base by restarting from a fresh Xcode 12 project template and make use of Combine and of the new Widgets, @Scene/AppStorage, ScrollViewReaders, lazy grids...
+* clean the code base by restarting from a fresh Xcode 12 project template and make use of await/async, Combine and the new Widgets, @Scene/AppStorage, ScrollViewReaders, lazy grids...
 * selection of glucose units
 * manage Nightscout JavaScript alerts synchronously
 * Apple Watch app: calibration, snapshots, workout and extended runtime background sessions, complications

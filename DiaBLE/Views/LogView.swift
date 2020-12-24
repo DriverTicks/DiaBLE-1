@@ -242,7 +242,7 @@ struct LogView: View {
                                     Image(systemName: "wrench.and.screwdriver").font(.title3)
                                     Text("Tools").font(.footnote).fixedSize()
                                 }
-                            }.labelStyle(IconOnlyLabelStyle())
+                            }
                         }
                     }
                 }
